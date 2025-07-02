@@ -5,6 +5,8 @@ from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 
+
+
 trabajador_blueprint = Blueprint('trabajador', __name__)
 
 @trabajador_blueprint.route('/trabajador')
@@ -12,47 +14,50 @@ def trabajador():
     if 'usuario' not in session:
         return redirect(url_for('login.login'))
 
-    usuario_id = session.get('usuario')  # id del usuario autenticado
+    usuario_id = session.get('usuario')
     grupo_usuario = session.get('grupo')
     print(f"ID usuario logueado: {usuario_id}, Grupo: '{grupo_usuario}'")
 
     conn = sqlite3.connect('gestor_de_tareas.db')
     conn.row_factory = sqlite3.Row
-    # Mostrar tareas asignadas por usuario o por grupo
+
+    proyecto_row = conn.execute(
+        'SELECT proyecto FROM usuario WHERE id = ?', (usuario_id,)
+    ).fetchone()
+
+    nombre_proyecto = proyecto_row['proyecto'] if proyecto_row else "Sin proyecto asignado"
+
     cursos = conn.execute('SELECT DISTINCT curso_destino FROM tareas').fetchall()
-    print('Valores curso_destino en tareas:')
     for c in cursos:
         print(f"'{c['curso_destino']}'")
+
     tareas = conn.execute('''
         SELECT * FROM tareas
         WHERE id_usuario_asignado = ? OR TRIM(LOWER(curso_destino)) = TRIM(LOWER(?))
     ''', (usuario_id, grupo_usuario)).fetchall()
-    # Obtener proyectos
+
     proyectos = conn.execute('SELECT * FROM Proyecto').fetchall()
     conn.close()
 
     print(f"Tareas encontradas: {tareas}")
 
-    # Formatear fecha_vencimiento a YYYY-MM-DD para el calendario
+    # Procesar tareas
     tareas_list = []
     for t in tareas:
         tarea_dict = dict(t)
         fecha = tarea_dict.get('fecha_vencimiento')
+        dt = None
         if fecha:
-            try:
-                dt = datetime.strptime(fecha, '%Y-%m-%d')
-            except ValueError:
+            for fmt in ('%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y'):
                 try:
-                    dt = datetime.strptime(fecha, '%d/%m/%Y')
+                    dt = datetime.strptime(fecha, fmt)
+                    break
                 except ValueError:
-                    try:
-                        dt = datetime.strptime(fecha, '%d-%m-%Y')
-                    except ValueError:
-                        dt = None
-            if dt:
-                tarea_dict['fecha_vencimiento'] = dt.strftime('%Y-%m-%d')
-        
-        # Agregar archivos para cada tarea
+                    continue
+        if dt:
+            tarea_dict['fecha_vencimiento'] = dt.strftime('%Y-%m-%d')
+
+        # Archivos relacionados
         archivos = []
         carpeta = os.path.join('static', 'archivos_tareas')
         if os.path.exists(carpeta):
@@ -63,10 +68,14 @@ def trabajador():
                         'url': f'/static/archivos_tareas/{nombre}'
                     })
         tarea_dict['archivos'] = archivos
-        
         tareas_list.append(tarea_dict)
 
-    return render_template('trabajador.html', tareas=tareas_list, proyectos=proyectos)
+    return render_template(
+        'trabajador.html',
+        tareas=tareas_list,
+        proyectos=proyectos,
+        nombre_proyecto=nombre_proyecto
+    )
 
 def notificar_lider_tarea_completada(tarea_id):
     conn = sqlite3.connect('gestor_de_tareas.db')

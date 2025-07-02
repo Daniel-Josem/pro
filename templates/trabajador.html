@@ -37,11 +37,6 @@
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a href="#" class="nav-link text-white" id="btn-planificacion">
-            <i class="bi bi-clipboard-check me-2"></i> <span>Proyectos</span>
-          </a>
-        </li>
-        <li class="nav-item mb-2">
           <a href="#" class="nav-link text-white" id="btn-calendario">
             <i class="bi bi-calendar3 me-2"></i> <span>Calendario</span>
           </a>
@@ -129,8 +124,9 @@
       <main class="p-4 seccion" id="seccion-mis-tareas">
         <div class="container">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-success fw-bold">Mis Tareas</h2>
-            <div>
+              <h2 class="text-primary fw-bold">Proyecto: {{ nombre_proyecto }}</h2>
+              <h2 class="text-success fw-bold">Mis Tareas</h2>
+          <div>
               <button class="btn btn-outline-secondary me-2" id="btn-exportar-tareas">
                 <i class="bi bi-file-earmark-excel me-1"></i> Exportar
               </button>
@@ -384,75 +380,7 @@
         </style>
       </main>
 
-      <!-- Sección: Proyectos -->
-      <main class="p-4 seccion" id="contenido-planificacion">
-        <div class="card shadow-sm d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
-          <div class="card-body d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
-            <h5 class="card-title">Mis Proyectos Asignados</h5>
-            <div class="table-responsive d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
-              <table class="table table-bordered table-striped mb-0" style="min-height:0;">
-                <thead class="table-success">
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Fecha inicio</th>
-                    <th>Fecha fin</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-planificacion">
-                  {% if proyectos %}
-                    {% for proyecto in proyectos %}
-                      <tr>
-                        <td>{{ proyecto['nombre'] }}</td>
-                        <td>{{ proyecto['descripcion'] }}</td>
-                        <td>{{ proyecto['fecha_inicio'] }}</td>
-                        <td>{{ proyecto['fecha_fin'] }}</td>
-                        <td>{{ proyecto['estado'] if proyecto['estado'] else 'Sin estado' }}</td>
-                      </tr>
-                    {% endfor %}
-                  {% else %}
-                    <tr>
-                      <td colspan="5" class="text-center">No tienes proyectos asignados.</td>
-                    </tr>
-                  {% endif %}
-                </tbody>
-              </table>
-              <style>
-                #tabla-planificacion tr td {
-                  vertical-align: middle;
-                  font-size: 1rem;
-                }
-                #tabla-planificacion tr td:first-child {
-                  font-weight: bold;
-                }
-                #tabla-planificacion tr td:last-child {
-                  text-align: center;
-                }
-                #contenido-planificacion .card,
-                #contenido-planificacion .card-body,
-                #contenido-planificacion .table-responsive {
-                  min-height: 0 !important;
-                  flex: 1 1 auto !important;
-                  display: flex !important;
-                  flex-direction: column !important;
-                  padding-bottom: 0 !important;
-                  margin-bottom: 0 !important;
-                }
-                #contenido-planificacion .table-responsive {
-                  overflow-y: auto !important;
-                }
-                #contenido-planificacion table {
-                  width: 100%;
-                  table-layout: auto;
-                  margin-bottom: 0 !important;
-                }
-              </style>
-            </div>
-          </div>
-        </div>
-      </main>
-
+      
       <!-- Sección: Ayuda -->
       <main class="p-4 seccion" id="seccion-ayuda">
         <div class="container d-flex flex-column flex-grow-1" style="min-height:0;">
