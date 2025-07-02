@@ -303,3 +303,126 @@ function marcarNotificacionLeida(id, btn) {
     });
 }
 
+// Funciones para la sección de inicio mejorada
+function inicializarSeccionInicio() {
+  // Botón para ir a Mis Tareas
+  const btnIrTareas = document.getElementById('btn-ir-tareas');
+  if (btnIrTareas) {
+    btnIrTareas.addEventListener('click', function() {
+      document.getElementById('btn-mis-tareas').click();
+    });
+  }
+
+  // Botón para ir al Calendario
+  const btnIrCalendario = document.getElementById('btn-ir-calendario');
+  if (btnIrCalendario) {
+    btnIrCalendario.addEventListener('click', function() {
+      document.getElementById('btn-calendario').click();
+    });
+  }
+
+  // Botón para ver todas las tareas
+  const btnVerTodasTareas = document.getElementById('btn-ver-todas-tareas');
+  if (btnVerTodasTareas) {
+    btnVerTodasTareas.addEventListener('click', function() {
+      document.getElementById('btn-mis-tareas').click();
+    });
+  }
+
+  // Botones de acciones de tareas en la sección inicio
+  const botonesAccionTarea = document.querySelectorAll('.task-actions button[data-tarea-id]');
+  botonesAccionTarea.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tareaId = this.getAttribute('data-tarea-id');
+      // Cambiar a la sección de tareas y mostrar el modal de detalle
+      document.getElementById('btn-mis-tareas').click();
+      setTimeout(() => {
+        const tareaCard = document.querySelector(`[data-tarea-id="${tareaId}"]`);
+        if (tareaCard) {
+          tareaCard.click();
+        }
+      }, 300);
+    });
+  });
+}
+
+// Función para mostrar la fecha actual en formato legible
+function mostrarFechaActual() {
+  const fechaActual = new Date();
+  const opciones = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  };
+  const fechaFormateada = fechaActual.toLocaleDateString('es-ES', opciones);
+  
+  // Capitalizar la primera letra
+  const fechaCapitalizada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+  
+  // Buscar el elemento de fecha y actualizarlo
+  const elementoFecha = document.getElementById('fecha-actual');
+  if (elementoFecha) {
+    elementoFecha.textContent = `Hoy es ${fechaCapitalizada}`;
+  }
+}
+
+// Función para animar los contadores de estadísticas
+function animarContadores() {
+  const contadores = document.querySelectorAll('.stat-number');
+  contadores.forEach(contador => {
+    const valorFinal = parseInt(contador.textContent);
+    let valorActual = 0;
+    const incremento = Math.ceil(valorFinal / 20);
+    const intervalo = setInterval(() => {
+      valorActual += incremento;
+      if (valorActual >= valorFinal) {
+        valorActual = valorFinal;
+        clearInterval(intervalo);
+      }
+      contador.textContent = valorActual;
+    }, 50);
+  });
+}
+
+// Inicializar todo cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializar la sección de inicio
+  inicializarSeccionInicio();
+  
+  // Mostrar fecha actual
+  mostrarFechaActual();
+  
+  // Animar contadores cuando se muestre la sección de inicio
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.id === 'seccion-inicio') {
+        animarContadores();
+        // Activar inmediatamente la animación del anillo de progreso
+        setTimeout(() => {
+          const progressRing = document.querySelector('.progress-ring-progress');
+          if (progressRing) {
+            progressRing.classList.add('animate');
+          }
+        }, 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+  
+  const seccionInicio = document.getElementById('seccion-inicio');
+  if (seccionInicio) {
+    observer.observe(seccionInicio);
+    // Si ya está visible, activar inmediatamente
+    if (seccionInicio.classList.contains('active')) {
+      setTimeout(() => {
+        const progressRing = document.querySelector('.progress-ring-progress');
+        if (progressRing) {
+          progressRing.classList.add('animate');
+        }
+        animarContadores();
+      }, 200);
+    }
+  }
+});
+

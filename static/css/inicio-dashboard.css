@@ -1,0 +1,268 @@
+/* Estilos para la sección de inicio - Dashboard del trabajador */
+
+/* Hero Section */
+.hero-content {
+  padding: 2rem 0;
+}
+
+.dashboard-icon-container {
+  position: relative;
+  display: inline-block;
+  font-size: 8rem;
+  opacity: 0.8;
+}
+
+.floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.floating-element {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.element-1 { top: 10%; left: 20%; animation-delay: 0s; }
+.element-2 { top: 20%; right: 10%; animation-delay: 0.5s; }
+.element-3 { bottom: 30%; left: 10%; animation-delay: 1s; }
+.element-4 { bottom: 10%; right: 20%; animation-delay: 1.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Tarjetas de estadísticas */
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.stat-label {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* Progress Ring */
+.progress-ring-container {
+  position: relative;
+  display: inline-block;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-background {
+  fill: none;
+  stroke: #e9ecef;
+  stroke-width: 6;
+}
+
+.progress-ring-progress {
+  fill: none;
+  stroke: #198754;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 339.292;
+  stroke-dashoffset: 339.292; /* Inicialmente completamente vacío */
+  transition: stroke-dashoffset 0.8s ease-out; /* Animación instantánea sin delay */
+}
+
+/* Clase para activar la animación inmediatamente */
+.progress-ring-progress.animate {
+  stroke-dashoffset: calc(339.292 - (339.292 * var(--progress)) / 100);
+}
+
+.progress-ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-percentage {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #198754;
+  display: block;
+}
+
+/* Activity Metrics */
+.activity-metric {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Weekly Activity */
+.weekly-activity {
+  margin-top: 2rem;
+}
+
+.activity-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.activity-bar {
+  width: 20px;
+  background: linear-gradient(to top, #198754, #20c997);
+  border-radius: 10px;
+  min-height: 20px;
+  transition: all 0.3s ease;
+}
+
+.activity-bar:hover {
+  transform: scaleY(1.1);
+  box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+/* Tips Section */
+.tip-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #495057;
+  padding: 0.5rem 0;
+}
+
+/* Weather Widget */
+.weather-widget {
+  padding: 1rem;
+}
+
+.motivation-widget {
+  padding: 1rem;
+}
+
+/* Botones principales */
+#btn-ir-tareas, #btn-ir-calendario {
+  transition: all 0.3s ease;
+}
+
+#btn-ir-tareas:hover, #btn-ir-calendario:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(25,135,84,0.3);
+}
+
+/* Estado vacío */
+.empty-state {
+  opacity: 0.7;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-icon-container {
+    font-size: 5rem;
+  }
+  
+  .floating-element {
+    font-size: 1rem;
+  }
+  
+  .progress-ring-container svg {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .progress-ring-progress,
+  .progress-ring-background {
+    r: 44;
+    stroke-dasharray: 276.46;
+    stroke-dashoffset: calc(276.46 - (276.46 * var(--progress)) / 100);
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-content .d-flex {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-lg {
+    width: 100%;
+  }
+  
+  .hero-content {
+    padding: 1rem 0;
+  }
+  
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .activity-day {
+    font-size: 0.8rem;
+  }
+  
+  .activity-bar {
+    width: 15px;
+  }
+}

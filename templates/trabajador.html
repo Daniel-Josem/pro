@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/static/css/tarea-card.css?v=20250701">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tarea-modal.css') }}?v=20250701">
   <link rel="stylesheet" href="/static/css/tareas-flotante.css?v=20250701">
+  <link rel="stylesheet" href="/static/css/inicio-dashboard.css?v=20250701">
   <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
 
 </head>
@@ -79,38 +80,208 @@
       </nav>
 
       <!-- Sección: Inicio -->
-      <main id="seccion-inicio" class="p-4 seccion active">
+      <main id="seccion-inicio" class="p-4 seccion active" style="background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);">
         <div class="container">
-          <h2 class="text-success fw-bold mb-4">¡Bienvenido!</h2>
-          <p class="lead">Aquí puedes gestionar tus tareas y proyectos asignados.</p>
-          <div class="alert alert-success" role="alert">
-            Usa el menú lateral para navegar por las diferentes secciones.
+          <!-- Hero Section -->
+          <div class="row align-items-center mb-5">
+            <div class="col-lg-8">
+              <div class="hero-content animate__animated animate__fadeInLeft">
+                <h1 class="display-4 fw-bold text-success mb-3">¡Bienvenido!</h1>
+                <p class="lead text-muted mb-4">
+                  <i class="bi bi-stars me-2 text-warning"></i>
+                  Gestiona tus tareas y proyectos de manera eficiente en tu espacio de trabajo personalizado.
+                </p>
+                <div class="alert alert-success border-0" style="border-radius: 15px;">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill me-3 text-success" style="font-size: 1.5rem;"></i>
+                    <div>
+                      <strong>Utiliza el menú lateral</strong> para navegar entre tus tareas y calendario.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 text-center">
+              <div class="hero-image animate__animated animate__fadeInRight">
+                <div class="dashboard-icon-container">
+                  <i class="bi bi-clipboard-check-fill text-success"></i>
+                  <div class="floating-elements">
+                    <span class="floating-element element-1">📋</span>
+                    <span class="floating-element element-2">✅</span>
+                    <span class="floating-element element-3">📊</span>
+                    <span class="floating-element element-4">⏰</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="mt-5">
-            <h5 class="fw-bold mb-3">Mis Tareas Actuales</h5>
-            {% if tareas %}
-              <ul class="list-group">
-                {% for tarea in tareas %}
-                  <li class="list-group-item">
-                    <strong>{{ tarea['titulo'] }}</strong><br>
-                    {{ tarea['descripcion'] }}<br>
-                    <small>Fecha: {{ tarea['fecha_vencimiento'] }} – Prioridad: {{ tarea['prioridad'] }}</small>
-                  </li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              <ul class="list-group">
-                <li class="list-group-item text-center text-muted">No tienes tareas asignadas.</li>
-              </ul>
-            {% endif %}
+          <!-- Visual Progress Section -->
+          <div class="card border-0 shadow-sm mb-5 animate__animated animate__fadeInUp" style="border-radius: 1.5rem; background: white;">
+            <div class="card-header bg-white border-0 py-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold text-dark mb-0">
+                  <i class="bi bi-graph-up me-2 text-success"></i>
+                  Tu Progreso
+                </h4>
+              </div>
+            </div>
+            <div class="card-body">
+              {% if tareas %}
+                <!-- Progress Ring -->
+                <div class="row align-items-center mb-4">
+                  <div class="col-md-4 text-center">
+                    <div class="progress-ring-container">
+                      <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring-background" cx="60" cy="60" r="54"></circle>
+                        <circle class="progress-ring-progress" cx="60" cy="60" r="54" 
+                                style="--progress: {{ ((tareas|selectattr('estado', 'equalto', 'completado')|list|length) / tareas|length * 100) if tareas|length > 0 else 0 }}%"></circle>
+                      </svg>
+                      <div class="progress-ring-text">
+                        <span class="progress-percentage">{{ ((tareas|selectattr('estado', 'equalto', 'completado')|list|length) / tareas|length * 100)|round(1) if tareas|length > 0 else 0 }}%</span>
+                        <small class="text-muted">Completado</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="progress-info">
+                      <h5 class="mb-3">Resumen de Actividad</h5>
+                      <div class="row g-3">
+                        <div class="col-6">
+                          <div class="activity-metric">
+                            <div class="metric-value text-success">{{ tareas|selectattr('estado', 'equalto', 'completado')|list|length }}</div>
+                            <div class="metric-label">Completadas</div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="activity-metric">
+                            <div class="metric-value text-warning">{{ tareas|selectattr('estado', 'equalto', 'en progreso')|list|length }}</div>
+                            <div class="metric-label">En Progreso</div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="activity-metric">
+                            <div class="metric-value text-info">{{ tareas|selectattr('estado', 'equalto', 'pendiente')|list|length }}</div>
+                            <div class="metric-label">Pendientes</div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="activity-metric">
+                            <div class="metric-value text-primary">{{ tareas|length }}</div>
+                            <div class="metric-label">Total</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Weekly Activity Visualization -->
+                <div class="weekly-activity">
+                  <h6 class="mb-3">Actividad de la Semana</h6>
+                  <div class="d-flex justify-content-between">
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 35px;"></div>
+                      <small class="text-muted">Lunes</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 65px;"></div>
+                      <small class="text-muted">Martes</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 45px;"></div>
+                      <small class="text-muted">Miércoles</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 70px;"></div>
+                      <small class="text-muted">Jueves</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 50px;"></div>
+                      <small class="text-muted">Viernes</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 30px;"></div>
+                      <small class="text-muted">Sabado</small>
+                    </div>
+                    <div class="activity-day">
+                      <div class="activity-bar" style="height: 55px;"></div>
+                      <small class="text-muted">Domingo</small>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <div class="text-center py-5">
+                  <div class="empty-state">
+                    <i class="bi bi-clipboard-data display-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">Panel de Progreso</h5>
+                    <p class="text-muted small">Aquí verás tu progreso cuando tengas tareas asignadas.</p>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
           </div>
 
-
-          <!-- Tips o recordatorios -->
-          <div class="alert alert-info mt-4" role="alert">
-            <i class="bi bi-lightbulb me-2"></i>
-            Consejo: ¡No olvides revisar tus tareas y fechas de entrega cada día!
+          <!-- Tips Section -->
+          <div class="row">
+            <div class="col-lg-6 mb-4">
+              <div class="card border-0 shadow-sm animate__animated animate__fadeInLeft" style="border-radius: 1.5rem; background: linear-gradient(135deg, #e3f2fd 0%, #f1f8e9 100%);">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-3">
+                    <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                    Consejos de Productividad
+                  </h5>
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <div class="tip-item">
+                        <i class="bi bi-clock text-primary me-2"></i>
+                        <span>Organiza tu tiempo efectivamente</span>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="tip-item">
+                        <i class="bi bi-flag text-danger me-2"></i>
+                        <span>Prioriza tareas importantes</span>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="tip-item">
+                        <i class="bi bi-calendar-check text-success me-2"></i>
+                        <span>Usa el calendario para planificar</span>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="tip-item">
+                        <i class="bi bi-chat-dots text-info me-2"></i>
+                        <span>Mantén comunicación con tu equipo</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+              <div class="card border-0 shadow-sm animate__animated animate__fadeInUp" style="border-radius: 1.5rem;">
+                <div class="card-body p-4 text-center">
+                  <div class="weather-widget">
+                    <i class="bi bi-sun-fill text-warning display-4 mb-3"></i>
+                    <h6 class="fw-bold">¡Que tengas un gran día!</h6>
+                    <p class="text-muted small mb-0" id="fecha-actual">Hoy es un buen día para ser productivo</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+              <div class="card border-0 shadow-sm animate__animated animate__fadeInRight" style="border-radius: 1.5rem; background: linear-gradient(135deg, #fff3cd 0%, #f8f9fa 100%);">
+                <div class="card-body p-4 text-center">
+                  <div class="motivation-widget">
+                    <i class="bi bi-trophy-fill text-warning display-4 mb-3"></i>
+                    <h6 class="fw-bold">¡Sigue así!</h6>
+                    <p class="text-muted small mb-0">Cada tarea completada te acerca a tus objetivos</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -149,7 +320,7 @@
               </div>
             </div>
             <div class="col-6 col-md-3 mb-3">
-              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-1s">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp">
                 <div class="card-body py-4">
                   <div class="icon-circle bg-primary bg-opacity-10 mb-2 mx-auto">
                     <i class="bi bi-check-circle-fill text-primary"></i>
@@ -160,7 +331,7 @@
               </div>
             </div>
             <div class="col-6 col-md-3 mb-3">
-              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-2s">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp">
                 <div class="card-body py-4">
                   <div class="icon-circle bg-warning bg-opacity-10 mb-2 mx-auto">
                     <i class="bi bi-hourglass-split text-warning"></i>
@@ -171,7 +342,7 @@
               </div>
             </div>
             <div class="col-6 col-md-3 mb-3">
-              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-3s">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp">
                 <div class="card-body py-4">
                   <div class="icon-circle bg-danger bg-opacity-10 mb-2 mx-auto">
                     <i class="bi bi-exclamation-circle-fill text-danger"></i>
