@@ -4,19 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Trabajo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/visual.css">
-  <link rel="stylesheet" href="/static/css/calendario.css">
-  <link rel="stylesheet" href="/static/css/tarea-card.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/tarea-modal.css') }}">
-  <link rel="stylesheet" href="/static/css/tareas-flotante.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css?v=20250701"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css?v=20250701" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css?v=20250701" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/visual.css?v=20250701">
+  <link rel="stylesheet" href="/static/css/calendario.css?v=20250701">
+  <link rel="stylesheet" href="/static/css/tarea-card.css?v=20250701">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tarea-modal.css') }}?v=20250701">
+  <link rel="stylesheet" href="/static/css/tareas-flotante.css?v=20250701">
   <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
 
 </head>
 <body>  
-  <div class="d-flex" id="wrapper">
+  <div class="d-flex" id="wrapper" style="height: 100vh; min-height: 0;">
     <!-- Sidebar visual admin/líder, pero con lógica trabajador -->
     <nav id="sidebar" class="sidebar bg-success text-white vh-100 p-3">
       <div class="sidebar-header mb-4 d-flex flex-column align-items-center">
@@ -57,7 +57,7 @@
       </ul>
     </nav>
     <!-- Contenido principal -->
-    <div class="main-content flex-grow-1 d-flex flex-column">
+    <div class="main-content flex-grow-1 d-flex flex-column" style="height: 100vh; min-height: 0; display: flex; flex-direction: column;">
       <!-- Topbar visual admin/líder, pero con lógica trabajador -->
       <nav class="navbar navbar-light bg-white shadow-sm px-4 mb-3">
         <div class="d-flex align-items-center w-100 justify-content-end">
@@ -84,7 +84,7 @@
       </nav>
 
       <!-- Sección: Inicio -->
-      <main id="seccion-inicio" class="p-4" style="display: block;">
+      <main id="seccion-inicio" class="p-4 seccion active">
         <div class="container">
           <h2 class="text-success fw-bold mb-4">¡Bienvenido!</h2>
           <p class="lead">Aquí puedes gestionar tus tareas y proyectos asignados.</p>
@@ -126,7 +126,7 @@
       </script>
       
       <!-- Sección: Mis Tareas -->
-      <main class="p-4" id="seccion-mis-tareas" style="display: none;">
+      <main class="p-4 seccion" id="seccion-mis-tareas">
         <div class="container">
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-success fw-bold">Mis Tareas</h2>
@@ -144,7 +144,9 @@
             <div class="col-6 col-md-3 mb-3">
               <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp">
                 <div class="card-body py-4">
-                  <div class="icon-circle bg-success bg-opacity-10 mb-2 mx-auto"><i class="bi bi-list-task text-success"></i></div>
+                  <div class="icon-circle bg-success bg-opacity-10 mb-2 mx-auto">
+                    <i class="bi bi-list-task text-success"></i>
+                  </div>
                   <h6 class="card-title text-muted">Total Tareas</h6>
                   <h2 class="card-text fw-bold text-success mb-0" id="total-tareas-js">0</h2>
                 </div>
@@ -153,7 +155,9 @@
             <div class="col-6 col-md-3 mb-3">
               <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-1s">
                 <div class="card-body py-4">
-                  <div class="icon-circle bg-primary bg-opacity-10 mb-2 mx-auto"><i class="bi bi-check-circle-fill text-primary"></i></div>
+                  <div class="icon-circle bg-primary bg-opacity-10 mb-2 mx-auto">
+                    <i class="bi bi-check-circle-fill text-primary"></i>
+                  </div>
                   <h6 class="card-title text-muted">Completadas</h6>
                   <h2 class="card-text fw-bold text-primary mb-0" id="tareas-completadas-js">0</h2>
                 </div>
@@ -162,7 +166,9 @@
             <div class="col-6 col-md-3 mb-3">
               <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-2s">
                 <div class="card-body py-4">
-                  <div class="icon-circle bg-warning bg-opacity-10 mb-2 mx-auto"><i class="bi bi-hourglass-split text-warning"></i></div>
+                  <div class="icon-circle bg-warning bg-opacity-10 mb-2 mx-auto">
+                    <i class="bi bi-hourglass-split text-warning"></i>
+                  </div>
                   <h6 class="card-title text-muted">En progreso</h6>
                   <h2 class="card-text fw-bold text-warning mb-0" id="tareas-progreso-js">0</h2>
                 </div>
@@ -171,7 +177,9 @@
             <div class="col-6 col-md-3 mb-3">
               <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-3s">
                 <div class="card-body py-4">
-                  <div class="icon-circle bg-danger bg-opacity-10 mb-2 mx-auto"><i class="bi bi-exclamation-circle-fill text-danger"></i></div>
+                  <div class="icon-circle bg-danger bg-opacity-10 mb-2 mx-auto">
+                    <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                  </div>
                   <h6 class="card-title text-muted">Atrasadas</h6>
                   <h2 class="card-text fw-bold text-danger mb-0" id="tareas-atrasadas-js">0</h2>
                 </div>
@@ -202,7 +210,9 @@
           <!-- Buscador de tareas -->
           <div class="mb-4">
             <div class="input-group">
-              <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+              <span class="input-group-text bg-white">
+                <i class="bi bi-search"></i>
+              </span>
               <input id="buscar-tarea" class="form-control" type="text" placeholder="Buscar tareas por título o descripción..." autocomplete="off">
             </div>
           </div>
@@ -280,14 +290,12 @@
               box-shadow: 0 4px 12px rgba(25,135,84,0.13);
             }
           </style>
-              <!-- Paginación -->
-              <nav aria-label="Paginación de tareas" class="p-3">
-                <ul class="pagination justify-content-center mb-0" id="tareas-paginacion">
-                  <!-- La paginación se generará dinámicamente -->
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <!-- Paginación -->
+          <nav aria-label="Paginación de tareas" class="p-3">
+            <ul class="pagination justify-content-center mb-0" id="tareas-paginacion">
+              <!-- La paginación se generará dinámicamente -->
+            </ul>
+          </nav>
           <!-- Modal de Filtros -->
           <div class="modal fade" id="tareaFilterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -343,13 +351,12 @@
               </div>
             </div>
           </div>
-          <!-- Fin sección tarjetas -->
         </div>
       </main>
 
       <!-- Sección: Calendario -->
-      <main class="p-4" id="contenido-calendario" style="display: none;">
-        <section class="calendar">
+      <main class="p-4 seccion" id="contenido-calendario">
+        <section class="calendar d-flex flex-column flex-grow-1" style="min-height:0;">
           <header class="calendar__header d-flex align-items-center justify-content-center mb-3">
             <button id="btn-prev" class="calendar__button"><i class="bi bi-chevron-left"></i></button>
             <h3 class="text-white mx-3 mb-0" id="calendar-date"></h3>
@@ -364,18 +371,26 @@
             <div class="calendar__weekday">Sáb</div>
             <div class="calendar__weekday">Dom</div>
           </section>
-          <ol class="calendar__days" id="calendar-days"></ol>
+          <ol class="calendar__days flex-grow-1" id="calendar-days" style="min-height:0;overflow-y:auto;"></ol>
           <div id="tooltip-evento"></div>
         </section>
+        <style>
+          /* Asegura que el calendario y sus hijos llenen el espacio y no causen scroll innecesario */
+          #contenido-calendario > .calendar,
+          #contenido-calendario > .calendar > .calendar__days {
+            flex: 1 1 auto;
+            min-height: 0;
+          }
+        </style>
       </main>
 
       <!-- Sección: Proyectos -->
-      <main class="p-4" id="contenido-planificacion" style="display: none;">
-        <div class="card shadow-sm">
-          <div class="card-body">
+      <main class="p-4 seccion" id="contenido-planificacion">
+        <div class="card shadow-sm d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
+          <div class="card-body d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
             <h5 class="card-title">Mis Proyectos Asignados</h5>
-            <div class="table-responsive">
-              <table class="table table-bordered table-striped">
+            <div class="table-responsive d-flex flex-column flex-grow-1" style="min-height:0; flex:1 1 auto;">
+              <table class="table table-bordered table-striped mb-0" style="min-height:0;">
                 <thead class="table-success">
                   <tr>
                     <th>Nombre</th>
@@ -402,37 +417,52 @@
                     </tr>
                   {% endif %}
                 </tbody>
-                <!-- Ajuste visual para la tabla de proyectos -->
-                <style>
-                  #tabla-planificacion tr td {
-                    vertical-align: middle;
-                    font-size: 1rem;
-                  }
-                  #tabla-planificacion tr td:first-child {
-                    font-weight: bold;
-                  }
-                  #tabla-planificacion tr td:last-child {
-                    text-align: center;
-                  }
-                </style>
               </table>
+              <style>
+                #tabla-planificacion tr td {
+                  vertical-align: middle;
+                  font-size: 1rem;
+                }
+                #tabla-planificacion tr td:first-child {
+                  font-weight: bold;
+                }
+                #tabla-planificacion tr td:last-child {
+                  text-align: center;
+                }
+                #contenido-planificacion .card,
+                #contenido-planificacion .card-body,
+                #contenido-planificacion .table-responsive {
+                  min-height: 0 !important;
+                  flex: 1 1 auto !important;
+                  display: flex !important;
+                  flex-direction: column !important;
+                  padding-bottom: 0 !important;
+                  margin-bottom: 0 !important;
+                }
+                #contenido-planificacion .table-responsive {
+                  overflow-y: auto !important;
+                }
+                #contenido-planificacion table {
+                  width: 100%;
+                  table-layout: auto;
+                  margin-bottom: 0 !important;
+                }
+              </style>
             </div>
           </div>
         </div>
       </main>
 
       <!-- Sección: Ayuda -->
-      <main class="p-4" id="seccion-ayuda" style="display: none;">
-        <div class="container">
+      <main class="p-4 seccion" id="seccion-ayuda">
+        <div class="container d-flex flex-column flex-grow-1" style="min-height:0;">
           <h2 class="text-success fw-bold mb-4">Centro de Ayuda</h2>
-          
-          <div class="row mb-4">
-            <div class="col-md-7 mb-4">
-              <div class="card border-0 shadow-sm">
-                <div class="card-body">
+          <div class="row mb-4 flex-grow-1" style="min-height:0;">
+            <div class="col-md-7 mb-4 d-flex flex-column flex-grow-1" style="min-height:0;">
+              <div class="card border-0 shadow-sm flex-grow-1 d-flex flex-column" style="min-height:0;">
+                <div class="card-body d-flex flex-column flex-grow-1" style="min-height:0;">
                   <h5 class="card-title mb-4">Preguntas Frecuentes</h5>
-                  
-                  <div class="accordion" id="accordionFAQ">
+                  <div class="accordion flex-grow-1" id="accordionFAQ" style="min-height:0;">
                     <div class="accordion-item">
                       <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -473,7 +503,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-5 mb-4">
+            <div class="col-md-5 mb-4 d-flex flex-column flex-grow-1" style="min-height:0;">
               <div class="card border-0 shadow-sm">
                 <div class="card-body">
                   <h5 class="card-title mb-4">Contactar Soporte</h5>
@@ -500,7 +530,6 @@
                   </form>
                 </div>
               </div>
-              
               <div class="card border-0 shadow-sm mt-4">
                 <div class="card-body">
                   <h5 class="card-title">Guías Rápidas</h5>
@@ -519,6 +548,16 @@
               </div>
             </div>
           </div>
+          <style>
+            /* Asegura que la ayuda y sus hijos llenen el espacio y no causen scroll innecesario */
+            #seccion-ayuda > .container,
+            #seccion-ayuda > .container > .row,
+            #seccion-ayuda .card-body,
+            #seccion-ayuda .accordion {
+              flex: 1 1 auto;
+              min-height: 0;
+            }
+          </style>
         </div>
       </main>
 
@@ -682,32 +721,22 @@
           ];
           
           function mostrarSeccion(id) {
-            console.log('Mostrando sección:', id);
-            
             // Ocultar todas las secciones
             secciones.forEach(sec => {
               const el = document.getElementById(sec);
               if (el) {
-                el.style.display = 'none';
                 el.classList.remove('active');
               }
             });
-            
             // Mostrar la sección seleccionada
             const seccionActiva = document.getElementById(id);
             if (seccionActiva) {
-              seccionActiva.style.display = 'block';
               seccionActiva.classList.add('active');
-              console.log('Sección mostrada:', id);
-            } else {
-              console.error('Sección no encontrada:', id);
             }
-            
             // Actualizar estado activo del menú
             document.querySelectorAll('#sidebar .nav-link').forEach(link => {
               link.classList.remove('active');
             });
-            
             // Marcar como activo el enlace correspondiente
             const linkActivo = document.querySelector(`#sidebar .nav-link[onclick*="${id}"], #sidebar .nav-link[data-section="${id}"]`);
             if (linkActivo) {
@@ -781,6 +810,47 @@ document.getElementById('dropdownNotificaciones')?.addEventListener('click', car
       justify-content: center !important;
       align-items: center !important;
       margin-bottom: 0.5rem !important;
+    }
+  </style>
+  <style>
+    html, body {
+      height: 100%;
+      min-height: 100%;
+    }
+    #wrapper {
+      height: 100vh;
+      min-height: 0;
+    }
+    .main-content {
+      height: 100vh;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content > main {
+      display: none;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .main-content > main.active {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    /* Opcional: Si el contenido interno necesita scroll, puedes agregar esto: */
+    .main-content > main.active > .container,
+    .main-content > main.active > .card,
+    .main-content > main.active > section {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    @media (max-width: 600px) {
+      .p-4 {
+        padding: 1rem !important;
+      }
     }
   </style>
 </body>
