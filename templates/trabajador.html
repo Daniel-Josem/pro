@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-  <!-- <link rel="stylesheet" href="/static/css/visual.css"> DESHABILITADO TEMPORALMENTE -->
+  <link rel="stylesheet" href="/static/css/visual.css">
   <link rel="stylesheet" href="/static/css/calendario.css">
   <link rel="stylesheet" href="/static/css/tarea-card.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tarea-modal.css') }}">
@@ -766,112 +766,22 @@ document.getElementById('dropdownNotificaciones')?.addEventListener('click', car
 </script>
     </div>
   </div>
+  
+  <!-- Solo mantener los estilos del logo del sidebar -->
   <style>
-        /* Reset y estructura base - MUY IMPORTANTE */
-        * {
-          box-sizing: border-box;
-        }
-        
-        body {
-          margin: 0 !important;
-          padding: 0 !important;
-          overflow-x: hidden;
-        }
-        
-        /* Wrapper principal */
-        #wrapper {
-          display: flex !important;
-          min-height: 100vh;
-          width: 100%;
-          margin: 0 !important;
-          padding: 0 !important;
-        }
-        
-        /* Sidebar fijo */
-        #sidebar {
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          height: 100vh !important;
-          width: 240px !important;
-          z-index: 1000 !important;
-          background: #198754 !important;
-          flex-shrink: 0 !important;
-        }
-        
-        /* Contenido principal - CORREGIDO */
-        .main-content {
-          margin-left: 240px !important;
-          width: calc(100% - 240px) !important;
-          min-height: 100vh !important;
-          background: #f8f9fa !important;
-          position: relative !important;
-          padding: 0 !important;
-          flex-grow: 1 !important;
-        }
-        
-        /* Navbar superior dentro del main-content */
-        .main-content > nav.navbar {
-          width: 100% !important;
-          margin: 0 !important;
-          background: white !important;
-          position: relative !important;
-        }
-        
-        /* Secciones principales */
-        .main-content > main {
-          width: 100% !important;
-          max-width: none !important;
-          margin: 20px !important;
-          padding: 30px !important;
-          background: #fff !important;
-          border-radius: 10px !important;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
-          min-height: calc(100vh - 120px) !important;
-        }
-        
-        /* Contenedor de proyectos específico */
-        #contenido-planificacion {
-          display: none !important;
-        }
-        
-        /* Cuando una sección está activa, se muestra */
-        .main-content > main.active {
-          display: block !important;
-        }
-        
-        /* Asegurar que las tarjetas de proyecto se vean bien */
-        #contenido-planificacion .card {
-          background: white !important;
-          border: 1px solid #dee2e6 !important;
-          border-radius: 8px !important;
-        }
-        
-        /* Tabla de proyectos */
-        #contenido-planificacion .table {
-          background: white !important;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-          #sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s;
-          }
-          
-          .main-content {
-            margin-left: 0 !important;
-            width: 100% !important;
-          }
-        }
-        
-        /* Sobreescribir cualquier CSS que interfiera */
-        .main-content {
-          border-radius: 0 !important;
-          margin-top: 0 !important;
-          margin-right: 0 !important;
-          margin-bottom: 0 !important;
-        }
-      </style>
+    .sidebar-logo {
+      width: 60px !important;
+      height: 60px !important;
+      object-fit: contain !important;
+      border-radius: 8px !important;
+    }
+    
+    .sidebar-logo-wrap {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin-bottom: 0.5rem !important;
+    }
+  </style>
 </body>
 </html>
