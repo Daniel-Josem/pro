@@ -6,6 +6,36 @@ from werkzeug.utils import secure_filename
 
 lider = Blueprint('lider', __name__)
 
+def limpiar_archivos_huerfanos():
+    """
+    Elimina archivos de la carpeta archivos_tareas que ya no están vinculados a ninguna tarea.
+    """
+    try:
+        conn = sqlite3.connect('gestor_de_tareas.db')
+        cursor = conn.cursor()
+        
+        # Obtener todas las rutas de archivos vinculadas a tareas
+        cursor.execute('SELECT ruta_archivo FROM tareas WHERE ruta_archivo IS NOT NULL')
+        archivos_vinculados = {row[0] for row in cursor.fetchall()}
+        conn.close()
+        
+        # Obtener todos los archivos en la carpeta
+        carpeta_archivos = os.path.join('static', 'archivos_tareas')
+        if os.path.exists(carpeta_archivos):
+            for nombre_archivo in os.listdir(carpeta_archivos):
+                ruta_relativa = f"archivos_tareas/{nombre_archivo}"
+                ruta_completa = os.path.join(carpeta_archivos, nombre_archivo)
+                
+                # Si el archivo no está vinculado a ninguna tarea, eliminarlo
+                if ruta_relativa not in archivos_vinculados:
+                    try:
+                        os.remove(ruta_completa)
+                        print(f"Archivo huérfano eliminado: {nombre_archivo}")
+                    except OSError as e:
+                        print(f"Error al eliminar archivo huérfano {nombre_archivo}: {e}")
+    except Exception as e:
+        print(f"Error en limpiar_archivos_huerfanos: {e}")
+
 # Crear tarea
 @lider.route('/crear_tarea', methods=['POST'])
 def crear_tarea():
@@ -23,19 +53,36 @@ def crear_tarea():
     estado = request.form['estado']
 
     archivo = request.files['archivo']
+    ruta_archivo = None
     if archivo and archivo.filename != '':
+        # Generar nombre único para evitar conflictos
         filename = secure_filename(archivo.filename)
-        ruta_archivo = f"archivos_tareas/{filename}"
+        nombre, extension = os.path.splitext(filename)
+        
+        # Insertar la tarea primero para obtener el ID
+        cursor.execute('INSERT INTO tareas (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, DATE("now"))', 
+                       (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado))
+        
+        tarea_id = cursor.lastrowid
+        
+        # Crear nombre único usando el ID de la tarea
+        filename_unico = f"{tarea_id}_{filename}"
+        ruta_archivo = f"archivos_tareas/{filename_unico}"
+        
         # Crear directorio si no existe
         upload_dir = os.path.join('static', 'archivos_tareas')
         if not os.path.exists(upload_dir):
             os.makedirs(upload_dir)
+        
+        # Guardar el archivo con el nombre único
         archivo.save(os.path.join('static', ruta_archivo))
+        
+        # Actualizar la tarea con la ruta del archivo
+        cursor.execute('UPDATE tareas SET ruta_archivo = ? WHERE id = ?', (ruta_archivo, tarea_id))
     else:
-        ruta_archivo = None
-
-    cursor.execute('INSERT INTO tareas (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado, ruta_archivo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, DATE("now"))', 
-                   (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado, ruta_archivo))
+        # Si no hay archivo, insertar la tarea normalmente
+        cursor.execute('INSERT INTO tareas (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado, ruta_archivo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, DATE("now"))', 
+                       (titulo, descripcion, curso_destino, fecha_vencimiento, prioridad, estado, None))
 
     conn.commit()
     conn.close()
@@ -93,11 +140,27 @@ def editar_tarea():
 
     if archivo and archivo.filename != '':
         filename = secure_filename(archivo.filename)
-        ruta_archivo = f"archivos_tareas/{filename}"
+        # Crear nombre único usando el ID de la tarea
+        filename_unico = f"{id_tarea}_{filename}"
+        ruta_archivo = f"archivos_tareas/{filename_unico}"
+        
         # Crear directorio si no existe
         upload_dir = os.path.join('static', 'archivos_tareas')
         if not os.path.exists(upload_dir):
             os.makedirs(upload_dir)
+        
+        # Obtener la ruta del archivo anterior para eliminarlo si existe
+        cursor.execute('SELECT ruta_archivo FROM tareas WHERE id = ?', (id_tarea,))
+        archivo_anterior = cursor.fetchone()
+        if archivo_anterior and archivo_anterior[0]:
+            ruta_anterior = os.path.join('static', archivo_anterior[0])
+            if os.path.exists(ruta_anterior):
+                try:
+                    os.remove(ruta_anterior)
+                except OSError:
+                    pass  # Continuar aunque no se pueda eliminar el archivo anterior
+        
+        # Guardar el nuevo archivo
         archivo.save(os.path.join('static', ruta_archivo))
 
     conn = sqlite3.connect('gestor_de_tareas.db')
@@ -131,9 +194,23 @@ def eliminar_tarea(id):
     conn = sqlite3.connect('gestor_de_tareas.db')
     cursor = conn.cursor()
 
+    # Obtener la ruta del archivo para eliminarlo
+    cursor.execute('SELECT ruta_archivo FROM tareas WHERE id = ?', (id,))
+    resultado = cursor.fetchone()
+    if resultado and resultado[0]:
+        ruta_archivo = os.path.join('static', resultado[0])
+        if os.path.exists(ruta_archivo):
+            try:
+                os.remove(ruta_archivo)
+            except OSError:
+                pass  # Continuar aunque no se pueda eliminar el archivo
+
     cursor.execute('DELETE FROM tareas WHERE id = ?', (id,))
     conn.commit()
     conn.close()
+
+    # Limpiar archivos huérfanos después de eliminar la tarea
+    limpiar_archivos_huerfanos()
 
     flash('Tarea eliminada exitosamente')
     return redirect(url_for('lider.lideres'))

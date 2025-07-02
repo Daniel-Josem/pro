@@ -57,16 +57,17 @@ def trabajador():
         if dt:
             tarea_dict['fecha_vencimiento'] = dt.strftime('%Y-%m-%d')
 
-        # Archivos relacionados
+        # Archivo asociado a la tarea (usando el campo ruta_archivo de la BD)
         archivos = []
-        carpeta = os.path.join('static', 'archivos_tareas')
-        if os.path.exists(carpeta):
-            for nombre in os.listdir(carpeta):
-                if nombre.startswith(f'{tarea_dict["id"]}_') or nombre.startswith(f'{tarea_dict["id"]}-') or nombre.startswith(f'{tarea_dict["id"]}'):
-                    archivos.append({
-                        'nombre': nombre,
-                        'url': f'/static/archivos_tareas/{nombre}'
-                    })
+        if tarea_dict.get('ruta_archivo'):
+            # Verificar que el archivo realmente existe en el sistema de archivos
+            ruta_completa = os.path.join('static', tarea_dict['ruta_archivo'])
+            if os.path.exists(ruta_completa):
+                nombre_archivo = os.path.basename(tarea_dict['ruta_archivo'])
+                archivos.append({
+                    'nombre': nombre_archivo,
+                    'url': f'/static/{tarea_dict["ruta_archivo"]}'
+                })
         tarea_dict['archivos'] = archivos
         tareas_list.append(tarea_dict)
 
