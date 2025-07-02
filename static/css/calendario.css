@@ -1,0 +1,499 @@
+:root {
+  --calendar-gradient: linear-gradient(to right, #198754, #157347);
+  --light-gray: #aaa;
+  --dark-gray: #444;
+  --calendar--appointment-text-color: #333;
+  --calendar-green-status: #d1e7dd;
+  --calendar-orange-status: #ffe5b4;
+  --calendar-red-status: #f8d7da;
+  --green: #0f5132;
+  --orange: #fd7e14;
+  --red: #842029;
+  --light-primary: #e3f2fd;
+  --primary: #0d6efd;
+}
+
+.main{
+    overflow: hidden;
+    border-radius: 60px 60px 0 0;
+    padding: 0;
+    container-name: main;
+    container-type: inline-size;
+}
+
+.container__heading{
+    color: #fff;
+    font-size: 1.25em;
+}
+
+/* Calendar */
+.calendar__header{
+    background-image: var(--calendar-gradient);
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.header__container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.calendar__button{
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #FE783D;
+    display: grid;
+    place-items: center;
+    font-size: 1.25em;
+    cursor: pointer;
+    transition: .3s ease-in-out scale;
+}
+
+.calendar__button--info{
+    display: none;
+}
+
+.calendar__button:hover, .calendar__button:focus{
+    scale: 1.05;
+}
+
+.calendar__weekdays, .calendar__days{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    place-items: center;
+}
+
+.calendar__weekday{
+    padding: 10px 0;
+}
+
+.calendar__weekday h4{
+    display: none;
+}
+
+.calendar__weekday abbr{
+    color: var(--light-gray);
+    font-size: 0.875em;
+}
+
+.calendar__days{
+    background-color: #FAFAFA;
+    transition: .3s ease-in-out background-color, .3s ease-in-out border-color;
+}
+
+.calendar__day{
+    width: 100%;
+    min-height: 64px;
+    max-height: 150px;
+    height: 100%;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #E6E6E6;
+}
+
+.calendar__day--hidden{
+    display: none;
+}
+
+.day__info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.day__info h5{
+    font-size: 0.9375em;
+    color: var(--dark-gray);
+    transition: .3s ease-in-out color;
+}
+
+.day__info button{
+    background: none;
+    border: none;
+    font-size: 1.125em;
+    color: #FE783D;
+    cursor: pointer;
+    transition: .3s ease-in-out color;
+}
+
+.calendar__day--content{
+    cursor: pointer;
+    transition: .3s ease-in-out background-color, .3s ease-in-out color;
+}
+
+.calendar__day--content:hover, .calendar__day--content:focus{
+    background-color: #FE783D;
+}
+
+.calendar__day--content:hover .day__info h5,
+.calendar__day--content:focus .day__info h5,
+.calendar__day--content:hover .day__info button,
+.calendar__day--content:focus .day__info button{
+    color: #fff;
+}
+
+.calendar__appointments{
+    display: none;
+}
+
+@container main (min-width: 400px){
+    .calendar__day{
+        padding: 10px;
+    }
+}
+
+@container main (min-width: 500px){
+    .calendar__header{
+        padding: 0 48px;
+    }
+    
+    .calendar__day{
+        aspect-ratio: 1/1;
+        padding: 10px 16px;
+    }
+
+    .day__info h5{
+        font-size: 1.125em;
+    }
+    
+    .day__info button{
+        font-size: 1.25em;
+    }
+
+    .calendar__button{
+        width: 28px;
+        height: 28px;
+        font-size: 24px;
+    }
+}
+
+@container main (min-width: 874px){
+    .calendar__day{
+        min-height: 150px;
+        max-height: none;
+        aspect-ratio: auto;
+        gap: 20px;
+    }
+
+    .container__heading{
+        color: #fff;
+        font-size: 1.5em;
+    }
+
+    .calendar__weekday{
+        padding: 16px 0;
+    }
+
+    .calendar__weekday h4{
+        display: block;
+        font-weight: 400;
+        color: var(--light-gray);
+    }
+    
+    .calendar__weekday abbr{
+        display: none;
+    }
+
+    .day__info h5{
+        font-size: 1.375em;
+    }
+    
+    .day__info button{
+        display: none;
+    }
+
+    .calendar__day--content {
+        transition: none;
+    }
+
+    .calendar__day--content:hover, .calendar__day--content:focus {
+        background-color: initial;
+    }
+
+    .calendar__day--content:hover .day__info h5,
+    .calendar__day--content:focus .day__info h5,
+    .calendar__day--content:hover .day__info button,
+    .calendar__day--content:focus .day__info button{
+        color: initial;
+    }
+
+    .calendar__appointments{
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        list-style: none;
+    }
+
+    .calendar__appointments li{
+        padding: 4px 8px;
+        font-size: 0.75em;
+        color: var(--calendar--appointment-text-color);
+        border-radius: 12px;
+        transition: .3s ease-in-out transform, .3s ease-in-out box-shadow;
+    }
+
+    .calendar__appointments li button{
+        width: 100%;
+        max-width: 100px;
+        background: none;
+        border: none;
+        text-align: left;
+        display: flex;
+        gap: 4px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .calendar__appointments li button .appointment-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .appointment__completada{
+        background-color: var(--calendar-green-status);
+    }
+
+    .appointment__completada i{
+        color: var(--green);
+    }
+
+    .appointment__pendiente{
+        background-color: var(--calendar-orange-status);
+    }
+
+    .appointment__pendiente i{
+        color: var(--orange);
+    }
+
+    .appointment__cancelada{
+        background-color: var(--calendar-red-status);
+    }
+
+    .appointment__cancelada i{
+        color: var(--red);
+    }
+
+    .calendar__button{
+        width: 32px;
+        height: 32px;
+        font-size: 1.75em;
+    }
+
+    .calendar__button--info{
+        display: grid;
+        width: 24px;
+        height: 24px;
+        font-size: 1.25em;
+        position: absolute;
+        right: 48px;
+    }
+
+    /* Drag & Drop */
+    .drag__over{
+        background-color: var(--light-primary);
+        border-color: var(--primary);
+        transition: .3s ease-in-out border-color, .3s ease-in-out background-color;
+    }
+
+    .drag__over .day__info h5{
+        color: #fff;
+    }
+
+    .dragging {
+        transform: scale(1.1);
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); /* Sombra para dar profundidad */
+    }
+}
+
+@container main (min-width: 1080px){
+    .calendar__appointments li{
+        max-width: 120px;
+        font-size: 0.875em;
+    }
+}
+
+.calendar__button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #198754;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.calendar__button:hover {
+  background-color: #e0f2e9;
+  transform: scale(1.05);
+}
+
+.calendar__header .header__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*objectivo calendario eventos y otros cambios*/
+.con-evento {
+  background-color: #198754;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 6px 0;
+  transition: background 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajuste adicional para centrar */
+.calendar__day {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+  position: relative;
+}
+
+.calendar__day .day__info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.tooltip-evento {
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  color: #198754;
+  border: 1px solid #198754;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  font-size: 14px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.calendar__day--tarea {
+  background: linear-gradient(120deg, #e9f9ee 70%, #b6f2c9 100%) !important;
+  border: 2.5px solid #198754cc !important;
+  box-shadow: 0 0 0 2px #19875433, 0 4px 16px rgba(25,135,84,0.10);
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.25s, border 0.25s, background 0.25s;
+}
+.calendar__day--tarea:hover, .calendar__day--tarea:focus {
+  background: linear-gradient(120deg, #d0f5e2 60%, #a2e9c2 100%) !important;
+  border: 2.5px solid #157347 !important;
+  box-shadow: 0 8px 32px #19875433, 0 2px 8px #19875422;
+  z-index: 2;
+}
+.calendar__day--tarea::after {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: #198754;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  box-shadow: 0 0 8px #19875455;
+  border: 2px solid #fff;
+}
+/* Tooltip nube para tareas */
+#tooltip-evento {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  background: #fff;
+  color: #198754;
+  padding: 22px 28px 18px 28px;
+  border-radius: 22px 22px 22px 8px;
+  font-size: 1.13em;
+  min-width: 260px;
+  max-width: 380px;
+  box-shadow: 0 12px 40px #19875433, 0 2px 12px #19875422;
+  border: 2.5px solid #b6f2c9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s, transform 0.18s;
+  transform: translateY(-12px) scale(0.98);
+  backdrop-filter: blur(2.5px);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  letter-spacing: 0.01em;
+}
+#tooltip-evento.show {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1.01);
+}
+#tooltip-evento .tarea-tooltip-titulo {
+  font-weight: bold;
+  color: #157347;
+  font-size: 1.18em;
+  margin-bottom: 2px;
+  text-shadow: none;
+  letter-spacing: 0.01em;
+}
+#tooltip-evento .tarea-tooltip-desc {
+  color: #198754;
+  font-size: 1.01em;
+  margin-bottom: 8px;
+  font-style: italic;
+  opacity: 0.92;
+}
+#tooltip-evento .tarea-tooltip-info {
+  font-size: 0.99em;
+  color: #157347;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#tooltip-evento .tarea-tooltip-info i {
+  color: #198754;
+  font-size: 1.08em;
+}
+#tooltip-evento .tarea-tooltip-estado {
+  display: inline-block;
+  font-size: 0.97em;
+  background: linear-gradient(90deg, #d1e7dd 60%, #b6f2c9 100%);
+  color: #198754;
+  border-radius: 8px;
+  padding: 3px 14px 3px 10px;
+  margin-top: 6px;
+  font-weight: 600;
+  box-shadow: 0 1px 4px #b6f2c9;
+  border: 1.5px solid #b6f2c9;
+  letter-spacing: 0.01em;
+}
+#tooltip-evento hr {
+  border: none;
+  border-top: 1.5px dashed #b6f2c9;
+  margin: 10px 0 8px 0;
+}
+
+
+
+
+

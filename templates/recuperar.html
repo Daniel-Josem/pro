@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recuperar Cuenta - Gestor de Tareas</title>
+
+  <!-- Tus estilos -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-img-div">
+      <img
+        src="{{ url_for('static', filename='avatars/barra_lateral.png') }}"
+        alt="Logo del Gestor de Tareas"
+      />
+    </div>
+
+    <div class="login-title-div">
+      {% if token %}
+        <h1 style="color: #28a745;">🔐 Restablecer Contraseña</h1>
+      {% else %}
+        <h1 style="color: #007bff;">📧 Recuperar Contraseña</h1>
+      {% endif %}
+    </div>
+
+    <div class="login-subtitle-div">
+      {% if token %}
+        <strong>Paso 2:</strong> Crea tu nueva contraseña para <strong>{{ email }}</strong>
+      {% else %}
+        <strong>Paso 1:</strong> Ingresa tu correo electrónico para recibir el enlace de recuperación
+      {% endif %}
+    </div>
+
+    <!-- Mostrar mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Formulario de recuperación o restablecimiento -->
+    <form method="POST" action="{{ url_for('recuperar.recuperar') }}{% if token %}?token={{ token }}{% endif %}">
+      {% if token %}
+        <!-- Formulario para nueva contraseña -->
+        <input
+          type="password"
+          id="nueva_contrasena"
+          name="nueva_contrasena"
+          placeholder="Nueva Contraseña"
+          required
+        />
+        <input
+          type="password"
+          id="confirmar_contrasena"
+          name="confirmar_contrasena"
+          placeholder="Confirmar Nueva Contraseña"
+          required
+        />
+        
+        <div class="botones">
+          <button type="submit" class="btn-iniciar">
+            Actualizar Contraseña
+          </button>
+        </div>
+      {% else %}
+        <!-- Formulario para solicitar recuperación -->
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Correo Electrónico"
+          required
+        />
+
+        <div class="botones">
+          <button type="submit" class="btn-iniciar">
+            Enviar Enlace de Recuperación
+          </button>
+        </div>
+      {% endif %}
+
+      <p class="text-center">
+        ¿Ya tienes acceso? 
+        <a href="{{ url_for('login.login') }}" class="link-registrate">Iniciar Sesión</a>
+      </p>
+    </form>
+  </div>
+</body>
+</html>

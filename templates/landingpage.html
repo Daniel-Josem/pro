@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestor de Tareas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
+
+</head>
+<body class="landing-page">
+  <header class="header">
+    <div class="logo">✅ Projekta</div>
+    <nav>
+      <!-- CORREGIDO -->
+      <a href="{{ url_for('login.login') }}" class="btn-iniciar-sesion">Iniciar Sesion</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Organiza tus tareas.<br> Mejora tu productividad.</h1>
+      <p>Una herramienta simple y poderosa para equipos e individuos.</p>
+
+      <!-- CORREGIDO -->
+      <a href="{{ url_for('login.crear_usuario') }}" class="btn">Regístrate</a>
+    </div>
+    <div class="hero-img">
+      <img src="{{ url_for('static', filename='avatars/projekta.jpg') }}" alt="Equipo de trabajo gestor de tareas" />
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>📝 Crear Tareas</h3>
+      <p>Agrega y gestiona tareas fácilmente con unos pocos clics.</p>
+    </div>
+    <div class="feature">
+      <h3>👥 Gestionar Usuarios</h3>
+      <p>Control total de acceso y permisos por usuario.</p>
+    </div>
+    <div class="feature">
+      <h3>📊 Seguimiento</h3>
+      <p>Visualiza tu progreso en un vistazo.</p>
+    </div>
+    <div class="feature">
+      <h3>🔐 Roles</h3>
+      <p>Define permisos específicos por rol.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 Gestor de Tareas. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- <script src="main.js"></script> -->
+</body>
+</html>

@@ -1,0 +1,654 @@
+body {
+  background: #f5f6fa;
+}
+
+/* Sidebar fija y colapsable */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 240px;
+  background: #198754;
+  color: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  padding-top: 0.2rem;
+  z-index: 100;
+  transition: width 0.5s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Glow verde a la derecha de la sidebar */
+.sidebar::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 240px;
+  width: 16px;
+  height: 100vh;
+  background: none;
+  box-shadow:
+    0 0 32px 8px #39ff1440,
+    0 0 64px 16px #39ff1420;
+  border-radius: 0 24px 24px 0;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 101;
+  transition: opacity 0.3s, left 0.5s;
+}
+
+.sidebar.sidebar-collapsed {
+  width: 90px !important;
+}
+.sidebar.sidebar-collapsed::after {
+  left: 90px;
+  opacity: 0.3;
+}
+
+/* Título y submenús */
+.sidebar h4 {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  transition: opacity 0.3s;
+}
+.sidebar .nav-link {
+  color: #fff;
+  font-weight: 500;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  justify-content: flex-start;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  min-height: 48px;
+  transition: justify-content 0.3s, padding 0.3s;
+  animation: none;
+}
+.sidebar .nav-link:hover {
+  animation: jelly-light 0.28s;
+  animation-fill-mode: both;
+}
+
+.sidebar .nav-link i {
+  font-size: 1.3rem;
+  min-width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  transition: margin 0.3s;
+}
+.sidebar .nav-link span {
+  transition: opacity 0.3s, width 0.3s, margin 0.3s;
+  white-space: nowrap;
+  opacity: 1;
+  width: auto;
+  margin-left: 0.5rem;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background: #fff;
+  color: #198754 !important;
+}
+.sidebar .dropdown-toggle::after {
+  filter: invert(1);
+  margin-left: auto;
+}
+.sidebar .collapse .nav-link {
+  padding-left: 2.5rem;
+  font-size: 0.97rem;
+}
+
+/* Opción 1: Submenús permanecen abiertos pero solo íconos visibles al colapsar */
+.sidebar.sidebar-collapsed .collapse {
+  display: none !important;
+}
+.sidebar.sidebar-collapsed .dropdown-toggle::after {
+  display: none !important;
+}
+.sidebar.sidebar-collapsed h4,
+.sidebar.sidebar-collapsed .nav-link span {
+  opacity: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.3s, width 0.3s, margin 0.3s;
+}
+
+/* Centrar iconos en la sidebar */
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  justify-content: flex-start;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  min-height: 48px;
+  transition: justify-content 0.3s, padding 0.3s;
+}
+.sidebar .nav-link i {
+  font-size: 1.3rem;
+  min-width: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  transition: margin 0.3s;
+}
+
+/* Cuando la sidebar está colapsada, centra los iconos */
+.sidebar.sidebar-collapsed .nav-link {
+  justify-content: center !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+.sidebar.sidebar-collapsed .nav-link i {
+  margin: 0 auto;
+}
+
+/* Oculta el texto cuando está colapsada */
+.sidebar.sidebar-collapsed .nav-link span {
+  opacity: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.3s, width 0.3s, margin 0.3s;
+}
+
+/* Main content adaptativo */
+.main-content {
+  margin-left: 240px;
+  transition: margin-left 0.5s ease;
+  background: #fff;
+  border-radius: 1rem;
+  margin-top: 1rem;
+  margin-right: 5rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  width: 88%;
+  min-height: 85vh;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+.sidebar-collapsed ~ .main-content {
+  margin-left: 125px;
+}
+
+/* Estadísticas cards */
+/*Modales*/
+.stat-card {
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.06);
+  text-align: center;
+  background: #e9f7ef;
+  padding: 1.5rem 1rem;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(25,135,84,0.08);
+}
+.stat-card .bi {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  color: #198754;
+}
+
+/* Tabla responsive */
+#mainContent .table-responsive table {
+  min-width: 900px;
+  font-size: 0.97rem;
+}
+
+/* Sidebar header */
+.sidebar-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+  transition: opacity 0.3s, width 0.3s, margin 0.3s;
+  white-space: nowrap;
+  text-align: center;
+  z-index: 2;
+}
+
+.sidebar-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: rgba(44, 204, 113, 0.12);
+  border-radius: 50%;
+  margin-top: 0.2rem;
+  box-shadow: 0 2px 8px rgba(44,204,113,0.08);
+  transition: opacity 0.3s, background 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sidebar-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.10));
+}
+
+/* Mostrar solo el logo cuando está colapsada */
+.sidebar.sidebar-collapsed .sidebar-title {
+  opacity: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+.sidebar.sidebar-collapsed .sidebar-logo-wrap {
+  opacity: 1 !important;
+  pointer-events: auto;
+  background: rgba(44, 204, 113, 0.18);
+}
+
+.sidebar:not(.sidebar-collapsed) .sidebar-logo-wrap {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* Animación de saltito */
+@keyframes saltito {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-4px) scale(1.04); }
+  50%  { transform: translateY(-2px) scale(1.02);}
+  70%  { transform: translateY(-1px) scale(1.01);}
+  100% { transform: translateY(0) scale(1);}
+}
+
+@keyframes jelly {
+  0%   { transform: scale(1,1); }
+  20%  { transform: scale(1.15,0.85); }
+  35%  { transform: scale(0.95,1.05); }
+  50%  { transform: scale(1.05,0.95); }
+  65%  { transform: scale(0.98,1.02); }
+  80%  { transform: scale(1.02,0.98); }
+  100% { transform: scale(1,1); }
+}
+
+@keyframes jelly-light {
+  0%   { transform: scale(1,1); }
+  30%  { transform: scale(1.07,0.95); }
+  50%  { transform: scale(0.97,1.03); }
+  70%  { transform: scale(1.02,0.98); }
+  100% { transform: scale(1,1); }
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  animation: jelly-light 0.28s;
+}
+
+.sidebar .nav-link.active {
+  animation: jelly-light 0.28s;
+  animation-fill-mode: both;
+}
+.sidebar .nav-link.saltito {
+  animation: saltito 0.28s;
+  animation-fill-mode: both;
+}
+/* Scroll horizontal obligatorio en tablas */
+    #mainContent { overflow-x: auto; }
+    #mainContent .table-responsive table { min-width: 1200px; }
+    #mainContent .table-responsive table.table { font-size: 0.9rem; }
+
+    /* Estilo para la tarjeta del profesor */
+    .profesor-card {
+      border: 1px solid #dee2e6; /* Borde */
+      border-radius: 0.25rem; /* Bordes redondeados */
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Sombra */
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: #fff; /* Fondo blanco */
+      width: 100%; /* Ocupa todo el ancho disponible */
+      height: auto; /* La altura se ajusta al contenido */
+      cursor: pointer; /* Indica que la tarjeta es clickeable */
+    }
+    .profesor-card .card-header {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #333;
+      display: flex; /* Para alinear la imagen y el nombre */
+      align-items: center; /* Centrar verticalmente */
+      padding-bottom: 0.5rem; /* Espacio debajo del encabezado */
+    }
+    .profesor-card .card-header img {
+      margin-right: 1rem; /* Espacio entre la imagen y el nombre */
+    }
+    .profesor-card .card-body {
+      padding-top: 0; /* Eliminar padding superior para que se pegue al header */
+    }
+    .profesor-card .card-body p {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem; /* Ajustar tamaño de fuente si es necesario */
+    }
+
+    /* Estilos para el modal de tareas */
+    #modalProfesorTareas .modal-header {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    #modalProfesorTareas .modal-title {
+      font-weight: bold;
+    }
+    #modalProfesorTareas .profesor-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    #modalProfesorTareas .profesor-info img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 1rem;
+    }
+    #modalProfesorTareas .profesor-details p {
+      margin-bottom: 0.2rem;
+      font-size: 0.95rem;
+    }
+    #modalProfesorTareas .tareas-filter {
+      margin-bottom: 1rem;
+    }
+    #modalProfesorTareas .table-tareas th,
+    #modalProfesorTareas .table-tareas td {
+      vertical-align: middle;
+      padding: 0.5rem;
+    }
+    #modalProfesorTareas .table-tareas th {
+      background-color: #f8f9fa;
+    }
+    #modalProfesorTareas .table-tareas .text-danger {
+      color: #dc3545 !important;
+      font-weight: bold;
+    }
+
+/* Estilo de perfil admin*/
+.user-dropdown-wrapper {
+  padding: 0 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.user-pill {
+  background-color: #198754;
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: background 0.3s;
+}
+
+.user-pill:hover {
+  background-color: #157347;
+}
+
+.user-pill img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid white;
+
+}
+
+.user-name {
+  margin-left: 0.3rem;
+  
+}
+/*Estilo y diseño de CHATBOX*/
+/* Contenedor principal del chat */
+.chat-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 1051;
+  background: linear-gradient(135deg, #157347 0%, #157347 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 32px 0 rgba(80,255,169,.15);
+  cursor: pointer;
+  transition: background .2s;
+}
+.chat-fab:hover { background: #1fbd8d; }
+
+.chatbox-float {
+  display: none;
+  position: fixed;
+  right: 36px;
+  bottom: 110px;
+  width: 340px;
+  max-width: 95vw;
+  height: 500px;
+  background: #23272f;
+  color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px 0 rgba(0,0,0,.25);
+  flex-direction: column;
+  z-index: 2001;
+  overflow: hidden;
+  animation: slideInUp .3s;
+}
+@keyframes slideInUp { from {transform: translateY(80px); opacity:0;} to{transform: translateY(0); opacity:1;} }
+
+.chatbox-header {
+  padding: .8rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(90deg,#0058a3 0%,#157347 100%);
+  color: #fff;
+  border-bottom: 1px solid #35384d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chatbox-body {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background: #222632;
+}
+.chatbox-messages {
+  height: 250px;
+  overflow-y: auto;
+  background: #23272f;
+  border-radius: 10px;
+  margin-bottom: .6rem;
+  padding: .5rem;
+}
+.chatbox-form {
+  padding: .5rem 1rem 1rem 1rem;
+  background: #222632;
+  border-top: 1px solid #383d51;
+  gap: 3px;
+}
+.chatbox-messages .msg-bubble {
+  background: #3ee98e25;
+  color: #fff;
+  border-radius: 18px;
+  padding: .45rem .8rem;
+  margin: .25rem 0;
+  max-width: 82%;
+  font-size: 0.95rem;
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 1px 4px rgba(90,90,90,0.06);
+}
+.chatbox-messages .msg-me {
+  align-items: flex-end;
+  background: linear-gradient(90deg, #157347 0%, #157347  100%);
+  color: #23272f;
+  margin-left: auto;
+}
+.msg-img, .msg-sticker {
+  max-width: 100px; max-height: 100px; margin: .25rem 0;
+  border-radius: 12px; border: 1px solid #5af5bc4a;
+}
+.stickers-popover {
+  display: none;
+  position: absolute;
+  bottom: 70px; right: 10px;
+  background: #23272f;
+  border-radius: 14px;
+  box-shadow: 0 4px 32px #0002;
+  padding: 6px 12px;
+  z-index: 2020;
+  min-width: 190px;
+}
+.stickers-popover img {
+  width: 44px; height: 44px; margin: 5px; cursor: pointer;
+  transition: filter .1s;
+}
+.stickers-popover img:hover { filter: brightness(1.2) drop-shadow(0 2px 4px #00ffcf75); }
+
+/* Boton de editar estudiante */
+.btn-miverde {
+  background: #157347;
+  color: #fff;
+  border: none;
+}
+.btn-miverde:hover {
+  background: #157347;
+}
+/*Porcentanje */
+/* Estilo para tarjetas de totales */
+.card {
+  border-radius: 16px;
+  transition: 0.3s ease-in-out;
+  background-color: #157347;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.card-body i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Progreso de proyectos */
+.progress {
+  background-color: #e9ecef;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  font-weight: bold;
+  padding: 0 10px;
+  line-height: 22px;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:focus,
+.sidebar .nav-link.clicked {
+  background: #7c3aed !important; /* Morado */
+  color: #fff !important;
+  animation: jelly-light 0.28s;
+}
+
+/* Script para agregar la clase 'clicked' al hacer click en los botones de la sidebar */
+/* Esto debe ir en el JS principal, pero aquí solo se deja el CSS necesario */
+/*Genero admin*/
+/* Estilos para la sección de archivos enviados - responsive y compacto */
+.card.archivos-section {
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.card.archivos-section .card-body {
+  padding: 1rem !important;
+}
+
+.archivos-lista {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.archivo-item {
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.archivo-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .card.archivos-section {
+    margin: 0 -0.5rem;
+  }
+  
+  .archivo-item {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mejoras para el modal de detalles */
+.modal-lg .modal-body {
+  padding: 1.5rem;
+}
+
+.modal-header.bg-info {
+  background-color: #3c8619 !important;
+}

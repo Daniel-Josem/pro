@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel Profesor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/static/css/visual.css" rel="stylesheet" />
+    <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
+</head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <nav id="sidebar" class="sidebar bg-success text-white vh-100 p-3">
+            <div class="sidebar-header mb-4 d-flex flex-column align-items-center">
+                <span class="sidebar-logo-wrap">
+                    <img src="/static/avatars/barra_lateral.png" alt="Logo" class="sidebar-logo" />
+                </span>
+                <span class="sidebar-title fw-bold">Líder</span>
+            </div>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white active" id="dashboard-link">
+                        <i class="bi bi-bar-chart-line me-2"></i> <span>Tareas</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white" id="proyecto-link">
+                        <i class="bi bi-folder me-2"></i> <span>Proyecto</span>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white curso-link-sidebar">
+                        <i class="bi bi-people me-2"></i> <span>Mi Grupo</span>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <div id="content" class="main-content flex-grow-1 d-flex flex-column">
+            <nav class="navbar navbar-light bg-white shadow-sm px-4 mb-3">
+                <div class="d-flex align-items-center w-100 justify-content-end">
+                    <ul class="navbar-nav flex-row align-items-center mb-0">
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownNotificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Notificaciones
+                                <span class="badge bg-danger ms-1" id="notificaciones-count">0</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNotificaciones" id="notificaciones-lista">
+                                <li><a class="dropdown-item text-center text-muted" href="#">No hay notificaciones</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-primary text-center" href="#" id="marcarTodasLeidas">Marcar todas como leídas</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item user-dropdown-wrapper d-flex justify-content-end align-items-center">
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle user-pill d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ url_for('static', filename='avatars/perfil_predeterminado.png') }}" alt="avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" />
+                                    <span class="user-name fw-bold">{{ nombre_usuario }}</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item" href="#" id="btnEditarPerfil">Perfil</a></li>
+                                    <li><hr class="dropdown-divider" />
+                                    <li><a class="dropdown-item text-danger" href="{{ url_for('login.login') }}">Cerrar sesión</a></li>
+                                </ul>
+
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="main-container" id="tasksContainer">
+                <h1>Gestión de Tareas</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-success" id="btnCrearTarea" data-bs-toggle="modal" data-bs-target="#modalTarea">
+                        <i class="bi bi-plus-circle me-2"></i> Crear Tarea
+                    </button>
+                </div>
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped table-hover tabla-tareas">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Descripción</th>
+                                <th>Grupo</th>
+                                <th>Fecha vencimiento</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Archivo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if tareas %}
+                                {% for tarea in tareas %}
+                                    <tr>
+                                        <td>{{ tarea['titulo'] }}</td>
+                                        <td>{{ tarea['descripcion'] }}</td>
+                                        <td>{{ tarea['curso_destino'] }}</td>
+                                        <td>{{ tarea['fecha_vencimiento'] }}</td>
+                                        <td>{{ tarea['prioridad'] }}</td>
+                                        <td>{{ tarea['estado'] }}</td>
+                                        <td>
+                                            {% if tarea['ruta_archivo'] %}
+                                                <a href="{{ url_for('static', filename=tarea['ruta_archivo']) }}" target="_blank">Ver archivo</a>
+                                            {% else %}
+                                                Sin archivo
+                                            {% endif %}
+                                        </td>
+                                        <td class="d-flex gap-2">
+                                            <button type="button" class="btn btn-info btn-sm btnVerDetalles" data-bs-toggle="modal" data-bs-target="#modalVerDetallesTarea"
+                                                data-id="{{ tarea['id'] }}"
+                                                data-titulo="{{ tarea['titulo'] }}"
+                                                data-descripcion="{{ tarea['descripcion'] }}"
+                                                data-curso="{{ tarea['curso_destino'] }}"
+                                                data-fecha="{{ tarea['fecha_vencimiento'] }}"
+                                                data-prioridad="{{ tarea['prioridad'] }}"
+                                                data-estado="{{ tarea['estado'] }}">
+                                                <i class="bi bi-eye me-1"></i>Ver Detalles
+                                            </button>
+                                            <button type="button" class="btn btn-warning btn-sm btnEditar" data-bs-toggle="modal" data-bs-target="#modalTarea"
+                                                data-id="{{ tarea['id'] }}"
+                                                data-titulo="{{ tarea['titulo'] }}"
+                                                data-descripcion="{{ tarea['descripcion'] }}"
+                                                data-curso="{{ tarea['curso_destino'] }}"
+                                                data-fecha="{{ tarea['fecha_vencimiento'] }}"
+                                                data-prioridad="{{ tarea['prioridad'] }}"
+                                                data-estado="{{ tarea['estado'] }}">
+                                                Editar
+                                            </button>
+                                            <form method="POST" action="{{ url_for('lider.eliminar_tarea', id=tarea['id']) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?');">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="8" class="text-center">No hay tareas</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="studentsContainer" class="main-container" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 id="studentsCourseTitle">Trabajadores del Grupo: <span>{{ usuarios_por_grupo.keys()|list|first }}</span></h2>
+                    <button class="btn btn-secondary" id="btnBackToTasks">Volver a Tareas</button>
+                </div>
+                <div class="row g-3 mb-3">
+                    {% for usuario in usuarios_por_grupo[usuarios_por_grupo.keys()|list|first] %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card shadow-sm h-100" style="background-color: #e6f4ea; border: 1px solid #b7e4c7;">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                <div class="mb-2">
+                                    <i class="bi bi-person-circle" style="font-size:2.5rem;color:#38b000;"></i>
+                                </div>
+                                <h5 class="card-title text-center mb-2">{{ usuario['nombre_completo'] }}</h5>
+                                <button type="button" class="btn btn-outline-success btnUsuarioGrupo w-100 mt-auto" 
+                                    data-nombre="{{ usuario['nombre_completo'] }}"
+                                    data-usuario="{{ usuario['nombre_usuario'] }}"
+                                    data-correo="{{ usuario['correo'] }}"
+                                    data-bs-toggle="modal" data-bs-target="#modalInfoUsuario">
+                                    Ver información
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="noStudentsMessage" class="alert alert-info text-center d-none" role="alert">
+                    No hay trabajadores asignados a este curso o no se pudieron cargar.
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalInfoUsuario" tabindex="-1" aria-labelledby="modalInfoUsuarioLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalInfoUsuarioLabel">Información del Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Nombre:</strong> <span id="infoNombre"></span></p>
+                            <p><strong>Usuario:</strong> <span id="infoUsuario"></span></p>
+                            <p><strong>Correo:</strong> <span id="infoCorreo"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projectsContainer" class="main-container" style="display: none;">
+                <h1>Gestión de Proyectos</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-success" id="btnCrearProyecto" data-bs-toggle="modal" data-bs-target="#modalProyecto">
+                        <i class="bi bi-plus-circle me-2"></i> Crear Proyecto
+                    </button>
+                    <button class="btn btn-secondary" id="btnBackToTasksFromProjects">Volver a Tareas</button>
+                </div>
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped table-hover tabla-proyectos">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Fecha de Inicio</th>
+                                <th>Fecha de Fin</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if proyectos %}
+                                {% for proyecto in proyectos %}
+                                    <tr>
+                                        <td>{{ proyecto['nombre'] }}</td>
+                                        <td>{{ proyecto['descripcion'] }}</td>
+                                        <td>{{ proyecto['fecha_inicio'] }}</td>
+                                        <td>{{ proyecto['fecha_fin'] }}</td>
+                                        <td class="d-flex gap-2">
+                                            <form method="POST" action="{{ url_for('lider.eliminar_proyecto', id=proyecto['id']) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?');">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="5">
+                                            <strong>Tareas Asignadas:</strong>
+                                            <ul>
+                                                {% for tarea in tareas %}
+                                                    {% if tarea['id_proyecto'] == proyecto['id'] %}
+                                                        <li>{{ tarea['titulo'] }}</li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+
+                                            <form method="POST" action="{{ url_for('lider.asignar_tarea_a_proyecto') }}" class="d-flex gap-2 mt-2">
+                                                <input type="hidden" name="proyecto_id" value="{{ proyecto['id'] }}">
+                                                <select name="tarea_id" class="form-select" required>
+                                                    <option value="" disabled selected>Seleccione una tarea</option>
+                                                    {% for tarea in tareas %}
+                                                        {% if not tarea['id_proyecto'] %}
+                                                            <option value="{{ tarea['id'] }}">{{ tarea['titulo'] }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-primary btn-sm">Asignar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="5" class="text-center">No hay proyectos</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="modal fade" id="modalTarea" tabindex="-1" aria-labelledby="modalTareaLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form id="formEditar" class="modal-content" method="POST" enctype="multipart/form-data" action="{{ url_for('lider.crear_tarea') }}">
+                        <input type="hidden" name="id" id="tareaId" />
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTareaLabel">Crear / Editar Tarea</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="titulo">Título</label>
+                                <input type="text" id="titulo" name="titulo" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="descripcion">Descripción</label>
+                                <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="curso_destino">Grupo destino</label>
+                                <select id="curso_destino" name="curso_destino" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione un curso</option>
+                                    <option value="Grupo 1">Grupo 1</option>
+                                    <option value="Grupo 2">Grupo 2</option>
+                                    <option value="Grupo 3">Grupo 3</option>
+                                    <option value="Grupo 4">Grupo 4</option>
+                                    <option value="Grupo 5">Grupo 5</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <label for="fecha_vencimiento">Fecha de vencimiento</label>
+                                    <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" />
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label for="prioridad">Prioridad</label>
+                                    <select id="prioridad" name="prioridad" class="form-select">
+                                        <option value="baja">Baja</option>
+                                        <option value="media" selected>Media</option>
+                                        <option value="alta">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estado">Estado</label>
+                                <select id="estado" name="estado" class="form-select">
+                                    <option value="pendiente" selected>Pendiente</option>
+                                    <option value="completada">Completada</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="archivo">Archivo (opcional)</label>
+                                <input type="file" id="archivo" name="archivo" class="form-control" />
+                                <small id="nombreArchivoActual" class="form-text text-muted"></small>
+                            </div>
+                        </div>
+                        <div class="modal-footer-combinado d-flex justify-content-end gap-2 p-3">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal fade" id="modalVerDetallesTarea" tabindex="-1" aria-labelledby="modalVerDetallesTareaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="modalVerDetallesTareaLabel">
+                                <i class="bi bi-clipboard-check me-2"></i>Detalles de la Tarea
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-4">
+                                <h4 id="detalleTareaTitle" class="text-primary mb-3">Título de la tarea</h4>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <strong>Descripción:</strong>
+                                        <p id="detalleTareaDescripcion" class="text-muted mt-1">Descripción de la tarea</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Curso:</strong>
+                                        <p id="detalleTareaCurso" class="mt-1">Curso destino</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Fecha límite:</strong>
+                                        <p id="detalleTareaFecha" class="mt-1">Fecha</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Estado:</strong>
+                                        <div class="mt-1">
+                                            <span id="detalleTareaEstado" class="badge bg-warning">Pendiente</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Prioridad:</strong>
+                                        <div class="mt-1">
+                                            <span id="detalleTareaPrioridad" class="badge bg-secondary">Media</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-4">
+                                <h6 class="text-dark mb-3">
+                                    <i class="bi bi-cloud-download me-2"></i>Archivos enviados por trabajadores
+                                </h6>
+                                <div class="card border-0 bg-white shadow-sm archivos-section">
+                                    <div class="card-body">
+                                        <div id="archivosEnviados" class="archivos-lista">
+                                            <div class="text-center py-3">
+                                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                    <span class="visually-hidden">Cargando archivos...</span>
+                                                </div>
+                                                <p class="mt-2 mb-0 text-muted small">Cargando archivos enviados...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button class="btn btn-success" id="btnRefrescarArchivos">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal Perfil -->
+            <div class="modal fade" id="modalPerfilLider" tabindex="-1" aria-labelledby="modalPerfilLiderLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <form id="formPerfilLider" method="POST" action="/actualizar_perfil_lider">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="modalPerfilLiderLabel">Editar Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                    <input type="hidden" name="usuario" id="perfilUsuario" value="{{ nombre_usuario }}">
+                    <div class="mb-3">
+                        <label for="perfilNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="perfilNombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="perfilCorreo" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="perfilCorreo" name="correo" required>
+                    </div>
+                    <hr>
+                    <h6>Cambiar Contraseña</h6>
+                    <div class="mb-3">
+                        <label for="contraseñaActual" class="form-label">Contraseña Actual</label>
+                        <input type="password" class="form-control" id="contraseñaActual" name="contraseña_actual">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nuevaContraseña" class="form-label">Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="nuevaContraseña" name="nueva_contraseña">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmarContraseña" class="form-label">Confirmar Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="confirmarContraseña" name="confirmar_contraseña">
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+            </div>
+
+
+    </div>
+
+    <style>
+        /* Refuerza el z-index y la interactividad solo para el modal de perfil */
+        #modalPerfilProfesor {
+            z-index: 1060 !important;
+        }
+        #modalPerfilProfesor .modal-dialog {
+            z-index: 1070 !important;
+        }
+        .modal-backdrop.show {
+            z-index: 1050 !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/lider.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mostrar estudiantes al hacer clic en "Mi Grupo"
+            document.querySelectorAll('.curso-link-sidebar').forEach(function (grupoLink) {
+                grupoLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.getElementById('tasksContainer').style.display = 'none';
+                    document.getElementById('projectsContainer').style.display = 'none';
+                    document.getElementById('studentsContainer').style.display = 'block';
+                });
+            });
+            // Botón volver a tareas
+            const btnBackToTasks = document.getElementById('btnBackToTasks');
+            if (btnBackToTasks) {
+                btnBackToTasks.addEventListener('click', function () {
+                    document.getElementById('studentsContainer').style.display = 'none';
+                    document.getElementById('tasksContainer').style.display = 'block';
+                });
+            }
+            // Modal info usuario
+            document.querySelectorAll('.btnUsuarioGrupo').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.getElementById('infoNombre').textContent = this.getAttribute('data-nombre');
+                    document.getElementById('infoUsuario').textContent = this.getAttribute('data-usuario');
+                    document.getElementById('infoCorreo').textContent = this.getAttribute('data-correo');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

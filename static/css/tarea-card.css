@@ -1,0 +1,108 @@
+/* Estilos avanzados para tarjetas de tareas en trabajador.html */
+.tarea-card-custom {
+  border-radius: 1.2rem;
+  background: linear-gradient(135deg, #f8fafc 60%, #e9f7ef 100%);
+  box-shadow: 0 4px 24px rgba(25,135,84,0.10);
+  transition: box-shadow 0.2s, transform 0.2s;
+  border-left: 7px solid #dee2e6;
+  min-height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+.tarea-card-custom:hover {
+  box-shadow: 0 12px 36px rgba(25,135,84,0.18);
+  transform: translateY(-6px) scale(1.03);
+}
+.tarea-titulo {
+  font-size: 1.35rem;
+  color: #198754;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 1px 0 #e9f7ef;
+}
+.tarea-desc {
+  font-size: 1.08rem;
+  color: #6c757d;
+  margin-bottom: 1.1rem;
+}
+.tarea-lista .tarea-icon {
+  font-size: 1.25rem;
+  opacity: 0.85;
+}
+.tarea-lista .list-group-item {
+  background: transparent;
+  font-size: 1.01rem;
+}
+.btn-archivo-tarea {
+  background: #f1f8e9;
+  color: #198754;
+  border: none;
+  border-radius: 2rem;
+  font-weight: 500;
+  padding: 0.35rem 1.1rem;
+  font-size: 0.98rem;
+  box-shadow: 0 2px 8px rgba(25,135,84,0.08);
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+.btn-archivo-tarea:hover {
+  background: #d1e7dd;
+  color: #145c32;
+}
+.estado-badge {
+  font-size: 1.08rem;
+  padding: 0.5em 1.1em;
+  border-radius: 1.5em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  box-shadow: 0 2px 8px rgba(25,135,84,0.08);
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+.estado-badge-completado, .estado-badge-completada {
+  background: #e9f7ef;
+  color: #198754;
+}
+.estado-badge-en-progreso {
+  background: #fff3cd;
+  color: #b8860b;
+}
+.estado-badge-atrasada, .estado-badge-atrasadas {
+  background: #f8d7da;
+  color: #c82333;
+}
+.estado-badge-pendiente {
+  background: #e2e3e5;
+  color: #495057;
+}
+/* Bordes laterales por estado */
+.tarea-borde-completado, .tarea-borde-completada {
+  border-left: 7px solid #198754 !important;
+}
+.tarea-borde-en-progreso {
+  border-left: 7px solid #ffc107 !important;
+}
+.tarea-borde-atrasada, .tarea-borde-atrasadas {
+  border-left: 7px solid #dc3545 !important;
+}
+.tarea-borde-pendiente {
+  border-left: 7px solid #adb5bd !important;
+}
+/* Efecto decorativo: círculo de fondo difuminado */
+.tarea-card-custom::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 110px;
+  height: 110px;
+  background: radial-gradient(circle, #e9f7ef 60%, #f8fafc 100%);
+  opacity: 0.5;
+  border-radius: 50%;
+  z-index: 0;
+}
+.tarea-card-custom .card-body { position: relative; z-index: 1; }

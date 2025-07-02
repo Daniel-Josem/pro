@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Trabajo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- <link rel="stylesheet" href="/static/css/visual.css"> DESHABILITADO TEMPORALMENTE -->
+  <link rel="stylesheet" href="/static/css/calendario.css">
+  <link rel="stylesheet" href="/static/css/tarea-card.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tarea-modal.css') }}">
+  <link rel="stylesheet" href="/static/css/tareas-flotante.css">
+  <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
+
+</head>
+<body>  
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar visual admin/líder, pero con lógica trabajador -->
+    <nav id="sidebar" class="sidebar bg-success text-white vh-100 p-3">
+      <div class="sidebar-header mb-4 d-flex flex-column align-items-center">
+        <span class="sidebar-logo-wrap">
+          <img src="/static/avatars/barra_lateral.png" alt="Logo" class="sidebar-logo" />
+        </span>
+        <span class="sidebar-title fw-bold">Trabajador</span>
+      </div>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item mb-2">
+          <a href="#" class="nav-link text-white active" id="btn-inicio">
+            <i class="bi bi-house-door me-2"></i> <span>Inicio</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="#" class="nav-link text-white" id="btn-mis-tareas">
+            <i class="bi bi-list-check me-2"></i> <span>Mis Tareas</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="#" class="nav-link text-white" id="btn-planificacion">
+            <i class="bi bi-clipboard-check me-2"></i> <span>Proyectos</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="#" class="nav-link text-white" id="btn-calendario">
+            <i class="bi bi-calendar3 me-2"></i> <span>Calendario</span>
+          </a>
+        </li>
+        <li class="mt-3">
+          <hr class="dropdown-divider bg-white opacity-25">
+        </li>
+        <li class="nav-item mb-2">
+          <a href="#" class="nav-link text-white" id="btn-ayuda">
+            <i class="bi bi-question-circle me-2"></i> <span>Ayuda</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- Contenido principal -->
+    <div class="main-content flex-grow-1 d-flex flex-column">
+      <!-- Topbar visual admin/líder, pero con lógica trabajador -->
+      <nav class="navbar navbar-light bg-white shadow-sm px-4 mb-3">
+        <div class="d-flex align-items-center w-100 justify-content-end">
+          <div class="dropdown me-3">
+            <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false" title="Notificaciones">
+              <i class="bi bi-bell me-1"></i>
+            </button>
+           <ul class="dropdown-menu dropdown-menu-end p-2 shadow-sm" aria-labelledby="dropdownNotificaciones" id="notificaciones-lista" style="min-width: 320px; max-height: 350px; overflow-y: auto; box-shadow: 0 8px 32px rgba(25,135,84,0.18); border-radius: 1.1rem;">
+              <li class="text-muted small">🔔 No hay notificaciones nuevas</li>
+            </ul>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 px-2 py-1" type="button" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="/static/avatars/perfil_predeterminado.png" class="rounded-circle" width="32" height="32" alt="Avatar" />
+              <span class="d-none d-md-inline small fw-semibold">Usuario</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#perfilModal">👤 Perfil</button></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a href="{{ url_for('login.login') }}" class="dropdown-item text-danger">🔒 Cerrar sesión</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Sección: Inicio -->
+      <main id="seccion-inicio" class="p-4" style="display: block;">
+        <div class="container">
+          <h2 class="text-success fw-bold mb-4">¡Bienvenido!</h2>
+          <p class="lead">Aquí puedes gestionar tus tareas y proyectos asignados.</p>
+          <div class="alert alert-success" role="alert">
+            Usa el menú lateral para navegar por las diferentes secciones.
+          </div>
+
+          <div class="mt-5">
+            <h5 class="fw-bold mb-3">Mis Tareas Actuales</h5>
+            {% if tareas %}
+              <ul class="list-group">
+                {% for tarea in tareas %}
+                  <li class="list-group-item">
+                    <strong>{{ tarea['titulo'] }}</strong><br>
+                    {{ tarea['descripcion'] }}<br>
+                    <small>Fecha: {{ tarea['fecha_vencimiento'] }} – Prioridad: {{ tarea['prioridad'] }}</small>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <ul class="list-group">
+                <li class="list-group-item text-center text-muted">No tienes tareas asignadas.</li>
+              </ul>
+            {% endif %}
+          </div>
+
+
+          <!-- Tips o recordatorios -->
+          <div class="alert alert-info mt-4" role="alert">
+            <i class="bi bi-lightbulb me-2"></i>
+            Consejo: ¡No olvides revisar tus tareas y fechas de entrega cada día!
+          </div>
+        </div>
+      </main>
+
+      <!-- Inyectar tareas reales para JS (para tareas flotantes) -->
+      <script>
+        window.tareasUsuario = {{ tareas|tojson }};
+      </script>
+      
+      <!-- Sección: Mis Tareas -->
+      <main class="p-4" id="seccion-mis-tareas" style="display: none;">
+        <div class="container">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-success fw-bold">Mis Tareas</h2>
+            <div>
+              <button class="btn btn-outline-secondary me-2" id="btn-exportar-tareas">
+                <i class="bi bi-file-earmark-excel me-1"></i> Exportar
+              </button>
+              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#tareaFilterModal">
+                <i class="bi bi-funnel me-1"></i> Filtros
+              </button>
+            </div>
+          </div>
+          <!-- Resumen de estado -->
+          <div class="row mb-4 justify-content-center" id="resumen-estado-tareas">
+            <div class="col-6 col-md-3 mb-3">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp">
+                <div class="card-body py-4">
+                  <div class="icon-circle bg-success bg-opacity-10 mb-2 mx-auto"><i class="bi bi-list-task text-success"></i></div>
+                  <h6 class="card-title text-muted">Total Tareas</h6>
+                  <h2 class="card-text fw-bold text-success mb-0" id="total-tareas-js">0</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="card-body py-4">
+                  <div class="icon-circle bg-primary bg-opacity-10 mb-2 mx-auto"><i class="bi bi-check-circle-fill text-primary"></i></div>
+                  <h6 class="card-title text-muted">Completadas</h6>
+                  <h2 class="card-text fw-bold text-primary mb-0" id="tareas-completadas-js">0</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-2s">
+                <div class="card-body py-4">
+                  <div class="icon-circle bg-warning bg-opacity-10 mb-2 mx-auto"><i class="bi bi-hourglass-split text-warning"></i></div>
+                  <h6 class="card-title text-muted">En progreso</h6>
+                  <h2 class="card-text fw-bold text-warning mb-0" id="tareas-progreso-js">0</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="card border-0 shadow resumen-estado-card bg-white text-center h-100 animate__animated animate__fadeInUp animate__delay-3s">
+                <div class="card-body py-4">
+                  <div class="icon-circle bg-danger bg-opacity-10 mb-2 mx-auto"><i class="bi bi-exclamation-circle-fill text-danger"></i></div>
+                  <h6 class="card-title text-muted">Atrasadas</h6>
+                  <h2 class="card-text fw-bold text-danger mb-0" id="tareas-atrasadas-js">0</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+          <style>
+            .resumen-estado-card {
+              border-radius: 1.2rem;
+              transition: box-shadow 0.2s, transform 0.2s;
+            }
+            .resumen-estado-card:hover {
+              box-shadow: 0 8px 32px rgba(25,135,84,0.10);
+              transform: translateY(-4px) scale(1.03);
+            }
+            .icon-circle {
+              width: 54px;
+              height: 54px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 2rem;
+              margin-bottom: 0.5rem;
+              box-shadow: 0 2px 8px rgba(25,135,84,0.08);
+            }
+          </style>
+          <!-- Buscador de tareas -->
+          <div class="mb-4">
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+              <input id="buscar-tarea" class="form-control" type="text" placeholder="Buscar tareas por título o descripción..." autocomplete="off">
+            </div>
+          </div>
+          <!-- Tarjetas de tareas en modo tarjeta dentro de la sección -->
+          <div id="contenedorTarjetasTareas" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+            {% if tareas %}
+              {% for tarea in tareas %}
+                <div class="col">
+                  <div class="card h-100 shadow-sm border-0 tarea-card-custom position-relative tarea-borde-{{ tarea['estado']|replace(' ', '-')|lower }} animate__animated animate__fadeInUp tarea-interactiva" data-tarea-id="{{ tarea['id'] }}" style="cursor:pointer;">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                      <div>
+                        <h5 class="card-title fw-bold mb-2 tarea-titulo">{{ tarea['titulo'] }}</h5>
+                        <p class="card-text text-muted mb-3 tarea-desc">{{ tarea['descripcion'] }}</p>
+                      </div>
+                      <ul class="list-group list-group-flush mb-3 tarea-lista">
+                        <li class="list-group-item px-0 py-1 border-0 d-flex align-items-center">
+                          <i class="bi bi-flag me-2 text-danger tarea-icon"></i>
+                          <span class="fw-semibold">Prioridad:</span> <span class="ms-1">{{ tarea['prioridad']|capitalize }}</span>
+                        </li>
+                        <li class="list-group-item px-0 py-1 border-0 d-flex align-items-center">
+                          <i class="bi bi-calendar-event me-2 text-primary tarea-icon"></i>
+                          <span class="fw-semibold">Vence:</span> <span class="ms-1">{{ tarea['fecha_vencimiento'] }}</span>
+                        </li>
+                        <li class="list-group-item px-0 py-1 border-0 d-flex align-items-center">
+                          <i class="bi bi-clipboard-check me-2 text-success tarea-icon"></i>
+                          <span class="fw-semibold">Estado:</span> <span class="ms-1">{{ tarea['estado']|capitalize }}</span>
+                        </li>
+                        {# Mostrar solo el archivo más reciente si hay varios #}
+                        {% if tarea['archivos'] and tarea['archivos']|length > 0 %}
+                        <li class="list-group-item px-0 py-1 border-0 d-flex align-items-center">
+                          <i class="bi bi-paperclip me-2 text-info tarea-icon"></i>
+                          <span class="fw-semibold">Archivo:</span>
+                          <a href="{{ tarea['archivos'][-1]['url'] }}" class="ms-2 link-success fw-semibold text-truncate tarea-archivo-link" target="_blank" style="max-width: 140px; display: inline-block; vertical-align: middle;">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i>{{ tarea['archivos'][-1]['nombre']|truncate(18, True, '...') }}
+                          </a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                      <div class="d-flex justify-content-between align-items-center mt-auto">
+                        {% if tarea['archivos'] and tarea['archivos']|length > 0 %}
+                          <a href="{{ tarea['archivos'][-1]['url'] }}" class="btn btn-archivo-tarea" target="_blank"><i class="bi bi-paperclip me-1"></i> Archivo</a>
+                        {% endif %}
+                        <span class="badge estado-badge estado-badge-{{ tarea['estado']|replace(' ', '-')|lower }}">
+                          <i class="bi {% if tarea['estado']=='completado' %}bi-check-circle-fill{% elif tarea['estado']=='en progreso' %}bi-hourglass-split{% elif tarea['estado']=='atrasada' %}bi-exclamation-circle-fill{% else %}bi-circle{% endif %} me-1"></i>
+                          {{ tarea['estado']|capitalize }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-12">
+                <div class="alert alert-info text-center">No tienes tareas asignadas.</div>
+              </div>
+            {% endif %}
+          </div>
+          <style>
+            .tarea-card-custom.tarea-interactiva {
+              transition: box-shadow 0.32s cubic-bezier(.4,1.6,.4,1), transform 0.28s cubic-bezier(.4,1.6,.4,1);
+              will-change: box-shadow, transform;
+              box-shadow: 0 2px 8px rgba(25,135,84,0.08), 0 1.5px 4px rgba(25,135,84,0.06);
+              border-radius: 1.1rem;
+              background: linear-gradient(120deg, #f8fff8 80%, #e9f9ee 100%);
+            }
+            .tarea-card-custom.tarea-interactiva:hover, .tarea-card-custom.tarea-interactiva:focus-within {
+              box-shadow: 0 16px 40px rgba(25,135,84,0.22), 0 4px 16px rgba(25,135,84,0.13);
+              transform: translateY(-14px) scale(1.045) rotateZ(-0.5deg);
+              z-index: 10;
+              border: 1.5px solid #19875433;
+              background: linear-gradient(120deg, #e9f9ee 70%, #d0f5e2 100%);
+            }
+            .tarea-card-custom.tarea-interactiva:active {
+              transform: translateY(-2px) scale(1.01);
+              box-shadow: 0 4px 12px rgba(25,135,84,0.13);
+            }
+          </style>
+              <!-- Paginación -->
+              <nav aria-label="Paginación de tareas" class="p-3">
+                <ul class="pagination justify-content-center mb-0" id="tareas-paginacion">
+                  <!-- La paginación se generará dinámicamente -->
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- Modal de Filtros -->
+          <div class="modal fade" id="tareaFilterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="filterModalLabel">Filtrar Tareas</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Estado</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="pendiente" id="filter-pendiente" checked>
+                      <label class="form-check-label" for="filter-pendiente">Pendientes</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="en progreso" id="filter-progreso" checked>
+                      <label class="form-check-label" for="filter-progreso">En progreso</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="completada" id="filter-completada" checked>
+                      <label class="form-check-label" for="filter-completada">Completadas</label>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Prioridad</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="alta" id="filter-alta" checked>
+                      <label class="form-check-label" for="filter-alta">Alta</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="media" id="filter-media" checked>
+                      <label class="form-check-label" for="filter-media">Media</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="baja" id="filter-baja" checked>
+                      <label class="form-check-label" for="filter-baja">Baja</label>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="filter-date-from" class="form-label">Fecha desde:</label>
+                    <input type="date" class="form-control" id="filter-date-from">
+                  </div>
+                  <div class="mb-3">
+                    <label for="filter-date-to" class="form-label">Fecha hasta:</label>
+                    <input type="date" class="form-control" id="filter-date-to">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <button type="button" class="btn btn-primary" id="aplicar-filtros">Aplicar Filtros</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fin sección tarjetas -->
+        </div>
+      </main>
+
+      <!-- Sección: Calendario -->
+      <main class="p-4" id="contenido-calendario" style="display: none;">
+        <section class="calendar">
+          <header class="calendar__header d-flex align-items-center justify-content-center mb-3">
+            <button id="btn-prev" class="calendar__button"><i class="bi bi-chevron-left"></i></button>
+            <h3 class="text-white mx-3 mb-0" id="calendar-date"></h3>
+            <button id="btn-next" class="calendar__button"><i class="bi bi-chevron-right"></i></button>
+          </header>
+          <section class="calendar__weekdays">
+            <div class="calendar__weekday">Lun</div>
+            <div class="calendar__weekday">Mar</div>
+            <div class="calendar__weekday">Mié</div>
+            <div class="calendar__weekday">Jue</div>
+            <div class="calendar__weekday">Vie</div>
+            <div class="calendar__weekday">Sáb</div>
+            <div class="calendar__weekday">Dom</div>
+          </section>
+          <ol class="calendar__days" id="calendar-days"></ol>
+          <div id="tooltip-evento"></div>
+        </section>
+      </main>
+
+      <!-- Sección: Proyectos -->
+      <main class="p-4" id="contenido-planificacion" style="display: none;">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Mis Proyectos Asignados</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead class="table-success">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Fecha inicio</th>
+                    <th>Fecha fin</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-planificacion">
+                  {% if proyectos %}
+                    {% for proyecto in proyectos %}
+                      <tr>
+                        <td>{{ proyecto['nombre'] }}</td>
+                        <td>{{ proyecto['descripcion'] }}</td>
+                        <td>{{ proyecto['fecha_inicio'] }}</td>
+                        <td>{{ proyecto['fecha_fin'] }}</td>
+                        <td>{{ proyecto['estado'] if proyecto['estado'] else 'Sin estado' }}</td>
+                      </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="5" class="text-center">No tienes proyectos asignados.</td>
+                    </tr>
+                  {% endif %}
+                </tbody>
+                <!-- Ajuste visual para la tabla de proyectos -->
+                <style>
+                  #tabla-planificacion tr td {
+                    vertical-align: middle;
+                    font-size: 1rem;
+                  }
+                  #tabla-planificacion tr td:first-child {
+                    font-weight: bold;
+                  }
+                  #tabla-planificacion tr td:last-child {
+                    text-align: center;
+                  }
+                </style>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Sección: Ayuda -->
+      <main class="p-4" id="seccion-ayuda" style="display: none;">
+        <div class="container">
+          <h2 class="text-success fw-bold mb-4">Centro de Ayuda</h2>
+          
+          <div class="row mb-4">
+            <div class="col-md-7 mb-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Preguntas Frecuentes</h5>
+                  
+                  <div class="accordion" id="accordionFAQ">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          ¿Cómo puedo marcar una tarea como completada?
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                          Para marcar una tarea como completada, ve a la sección <strong>"Mis Tareas"</strong> desde el menú lateral. Una vez allí, busca la tarea que deseas completar y haz clic en el botón con el símbolo de verificación (✓) que aparece en la columna "Acciones".
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          ¿Cómo utilizo el calendario para ver mis tareas?
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                          El calendario muestra todas tus tareas organizadas por fecha. Los días que tienen tareas asignadas están marcados con un punto. Para ver el detalle de las tareas de un día específico, simplemente haz clic sobre ese día en el calendario.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                          ¿Cómo adjunto archivos a una tarea?
+                        </button>
+                      </h2>
+                      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body">
+                          Dentro de la sección "Mis Tareas", al hacer clic en el botón "Ver detalles" de cualquier tarea, se abrirá un modal con toda la información de la tarea. En la parte inferior encontrarás un botón para "Subir archivo" que te permitirá adjuntar documentos a tu tarea.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 mb-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Contactar Soporte</h5>
+                  <form id="formulario-soporte">
+                    <div class="mb-3">
+                      <label for="asunto-soporte" class="form-label">Asunto</label>
+                      <input type="text" class="form-control" id="asunto-soporte" placeholder="Ej: Problema con calendario">
+                    </div>
+                    <div class="mb-3">
+                      <label for="tipo-soporte" class="form-label">Tipo de problema</label>
+                      <select class="form-select" id="tipo-soporte">
+                        <option selected value="">Selecciona una opción</option>
+                        <option value="tecnico">Problema técnico</option>
+                        <option value="acceso">Problema de acceso</option>
+                        <option value="funcionalidad">Funcionalidad no disponible</option>
+                        <option value="otro">Otro</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="descripcion-soporte" class="form-label">Descripción</label>
+                      <textarea class="form-control" id="descripcion-soporte" rows="4" placeholder="Describe tu problema detalladamente..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Enviar Consulta</button>
+                  </form>
+                </div>
+              </div>
+              
+              <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                  <h5 class="card-title">Guías Rápidas</h5>
+                  <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action">
+                      <i class="bi bi-file-earmark-pdf me-2 text-danger"></i> Guía de usuario (PDF)
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                      <i class="bi bi-play-circle me-2 text-primary"></i> Video tutorial: Gestión de tareas
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                      <i class="bi bi-play-circle me-2 text-primary"></i> Video tutorial: Uso del calendario
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Modal Editar Perfil -->
+      <div class="modal fade" id="perfilModal" tabindex="-1" aria-labelledby="perfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <form id="formPerfil" enctype="multipart/form-data">
+              <div class="modal-header">
+                <h5 class="modal-title" id="perfilModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label">Nombre</label>
+                  <input type="text" class="form-control" name="nombre" value="" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Acerca de mí</label>
+                  <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Avatar</label>
+                  <input type="file" class="form-control" name="avatar" accept="image/*">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Avatar actual:</label><br>
+                  <img src="/static/avatars/perfil_predeterminado.png" class="rounded-circle" width="100" height="100" alt="Avatar actual">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Vista previa:</label><br>
+                  <img id="previewAvatar" class="rounded-circle border" width="100" height="100" alt="Vista previa">
+                </div>
+                <div id="mensajePerfil" class="mt-2 text-success fw-bold"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">Guardar cambios</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Detalle de Tarea -->
+      <div class="modal fade" id="modalDetalleTarea" tabindex="-1" aria-labelledby="modalDetalleTareaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-success bg-opacity-10">
+              <h5 class="modal-title fw-bold" id="modalDetalleTareaLabel">Detalle de la Tarea</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <div id="detalle-tarea-contenido">
+                <!-- Aquí se cargan los detalles dinámicamente -->
+              </div>
+              <hr>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Descargar archivo actual:</label>
+                  <div id="detalle-tarea-archivo">
+                    <!-- Botón de descarga dinámico -->
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <form id="formSubirArchivoTarea" enctype="multipart/form-data">
+                    <label class="form-label fw-semibold">Subir nuevo archivo:</label>
+                    <div class="input-group">
+                      <input type="file" class="form-control" name="archivo_tarea" id="inputArchivoTarea" accept="*/*">
+                      <button class="btn btn-outline-success" type="submit"><i class="bi bi-upload"></i> Subir</button>
+                    </div>
+                    <div class="form-text">Formatos permitidos: PDF, DOCX, JPG, PNG, etc.</div>
+                  </form>
+                  <div id="mensajeArchivoTarea" class="mt-2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary" id="btnEditarTareaModal"><i class="bi bi-pencil-square me-1"></i> Editar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Botón flotante de chat -->
+      <button id="chatbox-toggle-btn" class="btn btn-success rounded-circle shadow-lg position-fixed" style="bottom: 32px; right: 32px; width: 56px; height: 56px; z-index: 1050; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+        <i class="bi bi-chat-dots"></i>
+      </button>
+      <!-- Chatbox flotante -->
+      <div id="chatbox" class="chatbox shadow position-fixed" style="bottom: 32px; right: 32px; width: 350px; max-width: 95vw; display: none; z-index: 1060; border-radius: 1.1rem; overflow: hidden; background: #fff; box-shadow: 0 8px 32px rgba(25,135,84,0.18);">
+        <div class="chatbox-header d-flex justify-content-between align-items-center px-3 py-2 bg-success bg-opacity-75 text-white">
+          <span><i class="bi bi-chat-dots me-2"></i>Chat en línea</span>
+          <button id="chatbox-close-btn" class="btn btn-light btn-sm rounded-pill px-3 py-1 fw-semibold">Cerrar</button>
+        </div>
+        <div class="chatbox-body p-2" id="chat-mensaje" style="background: #f8fff8; min-height: 120px; max-height: 220px; overflow-y: auto;">
+          <div class="text-muted text-center">Sin mensajes...</div>
+        </div>
+        <div class="chatbox-footer p-2 bg-white border-top">          <select id="chat-receptor" class="form-select mb-1">
+            <option disabled selected>Seleccionar receptor</option>
+            <option value="1">Supervisor</option>
+            <option value="2">Administrador</option>
+          </select>
+          <textarea id="chat-input" class="form-control mb-1" rows="2" placeholder="Escribe mensaje..."></textarea>
+          <button class="btn btn-success w-100" onclick="enviarMensaje()">Enviar</button>
+        </div>
+      </div>
+      <style>
+        #chatbox-toggle-btn {
+          transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
+        }
+        #chatbox-toggle-btn:hover {
+          background: #157347;
+          transform: scale(1.08);
+        }
+        #chatbox {
+          animation: chatbox-fade-in 0.25s cubic-bezier(.4,1.6,.4,1);
+        }
+        @keyframes chatbox-fade-in {
+          from { opacity: 0; transform: translateY(40px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      </style>
+      <script>
+        // Mostrar/ocultar chatbox
+        document.addEventListener('DOMContentLoaded', function() {
+          const chatbox = document.getElementById('chatbox');
+          const toggleBtn = document.getElementById('chatbox-toggle-btn');
+          const closeBtn = document.getElementById('chatbox-close-btn');
+          if (toggleBtn && chatbox) {
+            toggleBtn.addEventListener('click', function() {
+              chatbox.style.display = 'block';
+              toggleBtn.style.display = 'none';
+            });
+          }
+          if (closeBtn && chatbox) {
+            closeBtn.addEventListener('click', function() {
+              chatbox.style.display = 'none';
+              toggleBtn.style.display = 'flex';
+            });
+          }
+        });
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="/static/js/dashboard.js"></script>
+      <script src="/static/js/calendar.js"></script>
+      <script src="/static/js/mostrar-calendario.js"></script>
+      <script src="/static/js/tarea-modal.js"></script>
+      <script src="/static/js/tareas-flotante.js"></script>
+      <script>
+        // Mostrar la sección correspondiente al hacer clic en el menú lateral
+        document.addEventListener('DOMContentLoaded', function() {
+          const secciones = [
+            'seccion-inicio',
+            'seccion-mis-tareas',
+            'contenido-planificacion',
+            'contenido-calendario',
+            'seccion-estadisticas',
+            'seccion-ayuda'
+          ];
+          
+          function mostrarSeccion(id) {
+            console.log('Mostrando sección:', id);
+            
+            // Ocultar todas las secciones
+            secciones.forEach(sec => {
+              const el = document.getElementById(sec);
+              if (el) {
+                el.style.display = 'none';
+                el.classList.remove('active');
+              }
+            });
+            
+            // Mostrar la sección seleccionada
+            const seccionActiva = document.getElementById(id);
+            if (seccionActiva) {
+              seccionActiva.style.display = 'block';
+              seccionActiva.classList.add('active');
+              console.log('Sección mostrada:', id);
+            } else {
+              console.error('Sección no encontrada:', id);
+            }
+            
+            // Actualizar estado activo del menú
+            document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+              link.classList.remove('active');
+            });
+            
+            // Marcar como activo el enlace correspondiente
+            const linkActivo = document.querySelector(`#sidebar .nav-link[onclick*="${id}"], #sidebar .nav-link[data-section="${id}"]`);
+            if (linkActivo) {
+              linkActivo.classList.add('active');
+            }
+          }
+          
+          document.getElementById('btn-inicio')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('seccion-inicio');
+          });
+          document.getElementById('btn-mis-tareas')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('seccion-mis-tareas');
+          });
+          document.getElementById('btn-planificacion')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('contenido-planificacion');
+          });
+          document.getElementById('btn-calendario')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('contenido-calendario');
+          });
+          document.getElementById('btn-estadisticas')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('seccion-estadisticas');
+          });
+          document.getElementById('btn-ayuda')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            mostrarSeccion('seccion-ayuda');
+          });
+          
+          // Mostrar la sección de inicio por defecto
+          mostrarSeccion('seccion-inicio');
+        });
+      </script>
+      <script>
+// Notificaciones trabajador
+async function cargarNotificaciones() {
+  try {
+    const resp = await fetch('/api/notificaciones');
+    const data = await resp.json();
+    const lista = document.getElementById('notificaciones-lista');
+    if (data.ok && data.notificaciones.length > 0) {
+      lista.innerHTML = data.notificaciones.map(n =>
+        `<li class="dropdown-item small">${n.mensaje} <br><span class="text-muted">${n.fecha || ''}</span></li>`
+      ).join('');
+    } else {
+      lista.innerHTML = '<li class="text-muted small">🔔 No hay notificaciones nuevas</li>';
+    }
+  } catch (e) {
+    document.getElementById('notificaciones-lista').innerHTML = '<li class="text-danger small">Error al cargar notificaciones</li>';
+  }
+}
+document.getElementById('dropdownNotificaciones')?.addEventListener('click', cargarNotificaciones);
+</script>
+    </div>
+  </div>
+  <style>
+        /* Reset y estructura base - MUY IMPORTANTE */
+        * {
+          box-sizing: border-box;
+        }
+        
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow-x: hidden;
+        }
+        
+        /* Wrapper principal */
+        #wrapper {
+          display: flex !important;
+          min-height: 100vh;
+          width: 100%;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        /* Sidebar fijo */
+        #sidebar {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          height: 100vh !important;
+          width: 240px !important;
+          z-index: 1000 !important;
+          background: #198754 !important;
+          flex-shrink: 0 !important;
+        }
+        
+        /* Contenido principal - CORREGIDO */
+        .main-content {
+          margin-left: 240px !important;
+          width: calc(100% - 240px) !important;
+          min-height: 100vh !important;
+          background: #f8f9fa !important;
+          position: relative !important;
+          padding: 0 !important;
+          flex-grow: 1 !important;
+        }
+        
+        /* Navbar superior dentro del main-content */
+        .main-content > nav.navbar {
+          width: 100% !important;
+          margin: 0 !important;
+          background: white !important;
+          position: relative !important;
+        }
+        
+        /* Secciones principales */
+        .main-content > main {
+          width: 100% !important;
+          max-width: none !important;
+          margin: 20px !important;
+          padding: 30px !important;
+          background: #fff !important;
+          border-radius: 10px !important;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+          min-height: calc(100vh - 120px) !important;
+        }
+        
+        /* Contenedor de proyectos específico */
+        #contenido-planificacion {
+          display: none !important;
+        }
+        
+        /* Cuando una sección está activa, se muestra */
+        .main-content > main.active {
+          display: block !important;
+        }
+        
+        /* Asegurar que las tarjetas de proyecto se vean bien */
+        #contenido-planificacion .card {
+          background: white !important;
+          border: 1px solid #dee2e6 !important;
+          border-radius: 8px !important;
+        }
+        
+        /* Tabla de proyectos */
+        #contenido-planificacion .table {
+          background: white !important;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+          #sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+          }
+          
+          .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+          }
+        }
+        
+        /* Sobreescribir cualquier CSS que interfiera */
+        .main-content {
+          border-radius: 0 !important;
+          margin-top: 0 !important;
+          margin-right: 0 !important;
+          margin-bottom: 0 !important;
+        }
+      </style>
+</body>
+</html>

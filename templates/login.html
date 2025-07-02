@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Gestor de Tareas</title>
+
+  
+  <!-- Tus estilos -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='avatars/barra_lateral.png')}}">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-img-div">
+      <img
+        src="{{ url_for('static', filename='avatars/barra_lateral.png') }}"
+        alt="Logo del Gestor de Tareas"
+      />
+    </div>
+
+    <div class="login-title-div">
+      <h1>Bienvenido al Gestor de Tareas</h1>
+    </div>
+
+    <div class="login-subtitle-div">
+      Organiza tus proyectos y tareas con inspiración 💡
+    </div>
+
+    <!-- Formulario de login -->
+    <form method="POST" action="{{ url_for('login.login') }}">
+      <input
+        type="text"
+        id="nombre_usuario"
+        name="nombre_usuario"
+        placeholder="Nombre de Usuario"
+        required
+      />
+      <input
+        type="password"
+        id="contrasena"
+        name="contrasena"
+        placeholder="Contraseña"
+        required
+      />
+
+      <div class="botones">
+        <button type="submit" class="btn-iniciar">
+          Iniciar Sesión
+        </button>
+      </div>
+      <p class="text-center">
+        ¿No tienes cuenta? 
+        <a href="{{ url_for('login.crear_usuario') }}" class="link-registrate">Regístrate</a>.
+      </p>
+      <p class="text-center">
+        ¿Olvidaste tu contraseña? 
+        <a href="{{ url_for('recuperar.recuperar') }}" class="link-registrate">Restablecer contraseña</a>
+      </p>
+    </form>
+  </div>
+      <!--(MAJO)Mostrar alertas si hay mensajes --> 
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <script>
+        Swal.fire({
+          icon: 'warning',
+          title: '¡Atención!',
+          text: '{{ messages[0] }}',
+          confirmButtonColor: '#d33'
+        });
+      </script>
+    {% endif %}
+  {% endwith %}
+</body>
+</html>
